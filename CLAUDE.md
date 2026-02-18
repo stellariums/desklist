@@ -46,6 +46,12 @@ Two tables: `events` (main data) and `reminder_queue` (scheduled notification tr
 - `scheduler.rs` — background reminder polling + notification dispatch
 - `db.rs` — migration definitions
 
+## Changelog (v1.0.2)
+
+- Fixed timezone bug: notification display now correctly converts UTC to local time
+- Scheduler comparison uses `Utc::now()` to match UTC-stored `event_time` values
+- UI modernized with gradient theme, glassmorphism effects, and smoother animations
+
 ## Key Details
 
 - UI language is Chinese (zh-CN)
