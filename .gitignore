@@ -3,3 +3,7 @@ dist/
 nul
 *.log
 .claude/
+nsis-3.11/
+nsis-3.11.zip
+wix314-binaries/
+wix314-binaries.zip
