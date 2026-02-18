@@ -71,6 +71,7 @@ async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
             .builder()
             .title(&reminder.title)
             .body(&format!("Scheduled: {}", time_display))
+            .sound("Default")
             .show();
 
         sqlx::query("UPDATE reminder_queue SET fired = 1 WHERE id = ?")
