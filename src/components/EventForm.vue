@@ -172,7 +172,8 @@ function handleSave() {
 .form-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
   z-index: 100;
   display: flex;
   justify-content: flex-end;
@@ -180,37 +181,41 @@ function handleSave() {
 .form-panel {
   width: 100%;
   max-width: 320px;
-  background: #F8FAFC;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
   height: 100%;
-  box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
 }
 .form-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: #4F46E5;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 .form-close {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: none;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.2);
   color: white;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  transition: all 0.2s;
 }
 .form-close:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 .form-body {
   flex: 1;
@@ -233,18 +238,19 @@ function handleSave() {
   letter-spacing: 0.5px;
 }
 .form-input, .form-textarea {
-  padding: 8px 10px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
   font-size: 13px;
   color: #1E293B;
   background: white;
   outline: none;
-  transition: border-color 0.15s;
+  transition: all 0.2s;
   font-family: inherit;
 }
 .form-input:focus, .form-textarea:focus {
-  border-color: #4F46E5;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 .form-textarea {
   resize: none;
@@ -257,13 +263,13 @@ function handleSave() {
 }
 .btn {
   flex: 1;
-  padding: 8px 0;
+  padding: 10px 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
 }
 .btn-cancel {
   background: #E2E8F0;
@@ -271,17 +277,21 @@ function handleSave() {
 }
 .btn-cancel:hover {
   background: #CBD5E1;
+  transform: translateY(-1px);
 }
 .btn-save {
-  background: #4F46E5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 .btn-save:hover {
-  background: #4338CA;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  transform: translateY(-1px);
 }
 .btn-save:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 .slide-enter-active, .slide-leave-active {

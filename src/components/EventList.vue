@@ -96,43 +96,48 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   flex-direction: column;
   position: relative;
   min-height: 0;
+  background: rgba(255, 255, 255, 0.98);
 }
 .tab-bar {
   display: flex;
-  gap: 2px;
-  padding: 8px 12px;
-  background: #F1F5F9;
+  gap: 4px;
+  padding: 12px 16px;
+  background: rgba(248, 250, 252, 0.8);
   flex-shrink: 0;
+  backdrop-filter: blur(10px);
 }
 .tab-btn {
   flex: 1;
-  padding: 6px 0;
+  padding: 8px 0;
   border: none;
   background: transparent;
   color: #64748B;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
 }
 .tab-btn.active {
-  background: white;
-  color: #4F46E5;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  transform: translateY(-1px);
 }
 .tab-btn:hover:not(.active) {
   color: #334155;
+  background: rgba(100, 116, 139, 0.05);
 }
 .list-content {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 12px 80px;
+  padding: 12px 16px 80px;
+  background: rgba(255, 255, 255, 0.5);
 }
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 .empty-state {
   display: flex;
@@ -149,27 +154,27 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
 }
 .fab {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  bottom: 20px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
   border: none;
-  background: #4F46E5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
-  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4), 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
   padding: 0;
 }
 .fab:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.5);
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5), 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 .fab:active {
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 </style>

@@ -65,16 +65,19 @@ function getRecurrenceLabel(r: string): string {
 .event-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: #FFFFFF;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  transition: box-shadow 0.15s, transform 0.15s;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s;
   cursor: default;
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 .event-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+  transform: translateY(-1px);
+  border-color: rgba(102, 126, 234, 0.2);
 }
 .event-card.completed {
   opacity: 0.6;
@@ -87,9 +90,9 @@ function getRecurrenceLabel(r: string): string {
   border-left: 3px solid #EF4444;
 }
 .checkbox {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
   border: 2px solid #CBD5E1;
   background: transparent;
   cursor: pointer;
@@ -97,12 +100,13 @@ function getRecurrenceLabel(r: string): string {
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: all 0.15s;
+  transition: all 0.2s;
   flex-shrink: 0;
 }
 .checkbox.checked {
-  background: #4F46E5;
-  border-color: #4F46E5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 .card-content {
   flex: 1;
@@ -110,7 +114,7 @@ function getRecurrenceLabel(r: string): string {
   cursor: pointer;
 }
 .card-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: #1E293B;
   white-space: nowrap;
@@ -129,10 +133,11 @@ function getRecurrenceLabel(r: string): string {
 }
 .card-recurrence {
   font-size: 10px;
-  color: #4F46E5;
-  background: #EEF2FF;
-  padding: 1px 6px;
-  border-radius: 4px;
+  color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 500;
 }
 .card-reminder {
   font-size: 10px;
