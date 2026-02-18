@@ -34,41 +34,50 @@ async function close() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 36px;
-  padding: 0 12px;
-  background: #4F46E5;
-  color: white;
+  height: 40px;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
   user-select: none;
-  border-radius: 12px 12px 0 0;
+  border-radius: 16px 16px 0 0;
   flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 .title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .title-bar-buttons {
   display: flex;
   gap: 6px;
 }
 .title-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: none;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  border-radius: 6px;
+  background: rgba(100, 116, 139, 0.1);
+  color: #64748b;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: background 0.15s;
+  transition: all 0.2s;
 }
 .title-btn:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(100, 116, 139, 0.15);
+  color: #334155;
+  transform: scale(1.05);
 }
 .close-btn:hover {
-  background: #EF4444;
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
 }
 </style>
