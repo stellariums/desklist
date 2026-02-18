@@ -1,4 +1,5 @@
 use std::time::Duration;
+use chrono::{TimeZone, Utc, Local};
 use tauri::AppHandle;
 use tauri::Manager;
 use tauri_plugin_notification::NotificationExt;
@@ -35,7 +36,7 @@ async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
         None => return Ok(()),
     };
 
-    let now = chrono::Local::now()
+    let now = chrono::Utc::now()
         .format("%Y-%m-%dT%H:%M:%S")
         .to_string();
 
@@ -60,8 +61,13 @@ async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
     .await?;
 
     for reminder in &reminders {
-        let time_display = if reminder.event_time.len() >= 16 {
-            reminder.event_time[..16].replace("T", " ")
+        let time_display = if let Ok(utc_time) = chrono::NaiveDateTime::parse_from_str(
+            &reminder.event_time.replace("Z", ""),
+            "%Y-%m-%dT%H:%M:%S%.f",
+        ) {
+            let utc_dt = Utc.from_utc_datetime(&utc_time);
+            let local_dt = utc_dt.with_timezone(&Local);
+            local_dt.format("%Y-%m-%d %H:%M").to_string()
         } else {
             reminder.event_time.clone()
         };
