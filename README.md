@@ -22,6 +22,33 @@ Windows 桌面备忘/提醒小工具。无边框置顶窗口，最小化到系�
 
 ## 开发
 
+### 系统依赖
+
+#### Linux (Ubuntu/Debian)
+
+在构建前需要安装 Tauri 的系统依赖：
+
+```bash
+sudo apt update
+sudo apt install libwebkit2gtk-4.1-dev \
+  build-essential \
+  curl \
+  wget \
+  file \
+  libxdo-dev \
+  libssl-dev \
+  libayatana-appindicator3-dev \
+  librsvg2-dev
+```
+
+对于 Ubuntu 25.10，如果遇到 `javascriptcoregtk-4.1` 相关错误，请确保安装了 `libwebkit2gtk-4.1-dev` 包。
+
+#### Windows
+
+无需额外系统依赖。
+
+### 构建步骤
+
 ```bash
 # 安装依赖
 npm install
