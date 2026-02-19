@@ -258,6 +258,10 @@ function handleSave() {
 .form-input::placeholder, .form-textarea::placeholder {
   color: rgba(255, 255, 255, 0.3);
 }
+.form-input option {
+  background: #1a1a2e;
+  color: rgba(255, 255, 255, 0.9);
+}
 .form-textarea {
   resize: none;
 }

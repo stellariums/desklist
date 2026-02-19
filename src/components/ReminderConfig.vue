@@ -81,4 +81,8 @@ const advanceOptions = [
 .reminder-select:focus {
   border-color: #667eea;
 }
+.reminder-select option {
+  background: #1a1a2e;
+  color: rgba(255, 255, 255, 0.9);
+}
 </style>
