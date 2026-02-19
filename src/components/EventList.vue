@@ -60,10 +60,10 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
       <div v-else-if="events.length === 0" class="empty-state">
         <div class="empty-icon">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <rect x="4" y="8" width="32" height="28" rx="4" stroke="#CBD5E1" stroke-width="2"/>
-            <line x1="4" y1="16" x2="36" y2="16" stroke="#CBD5E1" stroke-width="2"/>
-            <circle cx="12" cy="12" r="2" fill="#CBD5E1"/>
-            <circle cx="20" cy="12" r="2" fill="#CBD5E1"/>
+            <rect x="4" y="8" width="32" height="28" rx="4" stroke="currentColor" stroke-width="2"/>
+            <line x1="4" y1="16" x2="36" y2="16" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            <circle cx="20" cy="12" r="2" fill="currentColor"/>
           </svg>
         </div>
         <span>暂无事件</span>
@@ -96,22 +96,21 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   flex-direction: column;
   position: relative;
   min-height: 0;
-  background: rgba(255, 255, 255, 0.98);
+  background: transparent;
 }
 .tab-bar {
   display: flex;
   gap: 4px;
   padding: 12px 16px;
-  background: rgba(248, 250, 252, 0.8);
+  background: rgba(255, 255, 255, 0.05);
   flex-shrink: 0;
-  backdrop-filter: blur(10px);
 }
 .tab-btn {
   flex: 1;
   padding: 8px 0;
   border: none;
   background: transparent;
-  color: #64748B;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 13px;
   font-weight: 500;
   border-radius: 8px;
@@ -125,14 +124,14 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   transform: translateY(-1px);
 }
 .tab-btn:hover:not(.active) {
-  color: #334155;
-  background: rgba(100, 116, 139, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.06);
 }
 .list-content {
   flex: 1;
   overflow-y: auto;
   padding: 12px 16px 80px;
-  background: rgba(255, 255, 255, 0.5);
+  background: transparent;
 }
 .card-list {
   display: flex;
@@ -145,7 +144,7 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: #94A3B8;
+  color: rgba(255, 255, 255, 0.45);
   font-size: 13px;
   gap: 12px;
 }
@@ -166,13 +165,13 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4), 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3), 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   padding: 0;
 }
 .fab:hover {
   transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5), 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4), 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 .fab:active {
   transform: scale(0.98);

@@ -36,22 +36,18 @@ async function close() {
   justify-content: space-between;
   height: 40px;
   padding: 0 16px;
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent;
   color: #1e293b;
   user-select: none;
-  border-radius: 16px 16px 0 0;
+  border-radius: 12px 12px 0 0;
   flex-shrink: 0;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .title {
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: rgba(255, 255, 255, 0.9);
 }
 .title-bar-buttons {
   display: flex;
@@ -61,8 +57,8 @@ async function close() {
   width: 28px;
   height: 28px;
   border: none;
-  background: rgba(100, 116, 139, 0.1);
-  color: #64748b;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -72,12 +68,12 @@ async function close() {
   transition: all 0.2s;
 }
 .title-btn:hover {
-  background: rgba(100, 116, 139, 0.15);
-  color: #334155;
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
   transform: scale(1.05);
 }
 .close-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #EF4444;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
 }
 </style>

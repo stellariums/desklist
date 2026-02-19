@@ -20,7 +20,11 @@
         "transparent": true,
         "resizable": true,
         "minWidth": 300,
-        "minHeight": 400
+        "minHeight": 400,
+        "windowEffects": {
+          "effects": ["acrylic"],
+          "color": "#0f0f1900"
+        }
       }
     ],
     "security": {
