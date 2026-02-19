@@ -15,7 +15,7 @@
         "title": "Desklist",
         "width": 360,
         "height": 520,
-        "alwaysOnTop": true,
+        "alwaysOnBottom": true,
         "decorations": false,
         "transparent": true,
         "resizable": true,
