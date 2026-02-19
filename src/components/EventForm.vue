@@ -181,30 +181,32 @@ function handleSave() {
 .form-panel {
   width: 100%;
   max-width: 320px;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(20, 20, 35, 0.85);
   backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
   height: 100%;
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .form-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .form-close {
   width: 28px;
   height: 28px;
   border: none;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -214,7 +216,8 @@ function handleSave() {
   transition: all 0.2s;
 }
 .form-close:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.9);
   transform: scale(1.05);
 }
 .form-body {
@@ -233,24 +236,27 @@ function handleSave() {
 .form-group label {
   font-size: 12px;
   font-weight: 600;
-  color: #64748B;
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 .form-input, .form-textarea {
   padding: 10px 12px;
-  border: 1.5px solid #E2E8F0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   font-size: 13px;
-  color: #1E293B;
-  background: white;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
   outline: none;
   transition: all 0.2s;
   font-family: inherit;
 }
 .form-input:focus, .form-textarea:focus {
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+.form-input::placeholder, .form-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 .form-textarea {
   resize: none;
@@ -259,7 +265,7 @@ function handleSave() {
   display: flex;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 .btn {
   flex: 1;
@@ -272,11 +278,12 @@ function handleSave() {
   transition: all 0.2s;
 }
 .btn-cancel {
-  background: #E2E8F0;
-  color: #475569;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
 }
 .btn-cancel:hover {
-  background: #CBD5E1;
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
 }
 .btn-save {

@@ -67,24 +67,24 @@ function getRecurrenceLabel(r: string): string {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.2s;
   cursor: default;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .event-card:hover {
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
-  border-color: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.25);
 }
 .event-card.completed {
-  opacity: 0.6;
+  opacity: 0.75;
 }
 .event-card.completed .card-title {
   text-decoration: line-through;
-  color: #94A3B8;
+  color: rgba(255, 255, 255, 0.4);
 }
 .event-card.overdue {
   border-left: 3px solid #EF4444;
@@ -93,7 +93,7 @@ function getRecurrenceLabel(r: string): string {
   width: 24px;
   height: 24px;
   border-radius: 8px;
-  border: 2px solid #CBD5E1;
+  border: 2px solid rgba(255, 255, 255, 0.25);
   background: transparent;
   cursor: pointer;
   display: flex;
@@ -116,7 +116,7 @@ function getRecurrenceLabel(r: string): string {
 .card-title {
   font-size: 14px;
   font-weight: 500;
-  color: #1E293B;
+  color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -129,20 +129,20 @@ function getRecurrenceLabel(r: string): string {
 }
 .card-time {
   font-size: 11px;
-  color: #64748B;
+  color: rgba(255, 255, 255, 0.55);
 }
 .card-recurrence {
   font-size: 10px;
-  color: #667eea;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  color: #a5b4fc;
+  background: rgba(102, 126, 234, 0.15);
   padding: 2px 8px;
   border-radius: 6px;
   font-weight: 500;
 }
 .card-reminder {
   font-size: 10px;
-  color: #F59E0B;
-  background: #FFFBEB;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
   padding: 1px 6px;
   border-radius: 4px;
 }
@@ -151,7 +151,7 @@ function getRecurrenceLabel(r: string): string {
   height: 24px;
   border: none;
   background: transparent;
-  color: #CBD5E1;
+  color: rgba(255, 255, 255, 0.2);
   cursor: pointer;
   border-radius: 6px;
   display: flex;
@@ -166,7 +166,7 @@ function getRecurrenceLabel(r: string): string {
   opacity: 1;
 }
 .delete-btn:hover {
-  color: #EF4444;
-  background: #FEF2F2;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.15);
 }
 </style>
