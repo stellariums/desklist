@@ -67,17 +67,17 @@ function getRecurrenceLabel(r: string): string {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--dl-surface);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.2s;
   cursor: default;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--dl-border-dim);
 }
 .event-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
-  border-color: rgba(102, 126, 234, 0.25);
+  border-color: var(--dl-accent-border-hover);
 }
 .event-card.completed {
   opacity: 0.75;
@@ -104,9 +104,9 @@ function getRecurrenceLabel(r: string): string {
   flex-shrink: 0;
 }
 .checkbox.checked {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--dl-accent-gradient);
   border-color: transparent;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px var(--dl-accent-shadow);
 }
 .card-content {
   flex: 1;
@@ -133,8 +133,8 @@ function getRecurrenceLabel(r: string): string {
 }
 .card-recurrence {
   font-size: 10px;
-  color: #a5b4fc;
-  background: rgba(102, 126, 234, 0.15);
+  color: var(--dl-accent-light);
+  background: var(--dl-accent-subtle);
   padding: 2px 8px;
   border-radius: 6px;
   font-weight: 500;

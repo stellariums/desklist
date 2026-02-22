@@ -59,7 +59,7 @@ const advanceOptions = [
 .reminder-row input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #4F46E5;
+  accent-color: var(--dl-accent);
   cursor: pointer;
 }
 .reminder-label {
@@ -70,19 +70,19 @@ const advanceOptions = [
 .reminder-select {
   flex: 1;
   padding: 6px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--dl-border-subtle);
   border-radius: 8px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--dl-surface);
   outline: none;
   transition: border-color 0.15s;
 }
 .reminder-select:focus {
-  border-color: #667eea;
+  border-color: var(--dl-accent);
 }
 .reminder-select option {
-  background: #1a1a2e;
+  background: var(--dl-dropdown-bg);
   color: rgba(255, 255, 255, 0.9);
 }
 </style>

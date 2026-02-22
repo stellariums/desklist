@@ -2,13 +2,17 @@
 import { ref } from 'vue';
 import type { DeskEvent } from './types';
 import { useEvents } from './composables/useEvents';
+import { useTheme } from './composables/useTheme';
 import TitleBar from './components/TitleBar.vue';
 import EventList from './components/EventList.vue';
 import EventForm from './components/EventForm.vue';
+import SettingsPanel from './components/SettingsPanel.vue';
 
 const { createEvent, updateEvent } = useEvents();
+useTheme().init();
 
 const formVisible = ref(false);
+const settingsVisible = ref(false);
 const editEvent = ref<DeskEvent | null>(null);
 const eventListRef = ref<InstanceType<typeof EventList> | null>(null);
 
@@ -41,7 +45,7 @@ async function handleUpdate(id: string, data: Partial<DeskEvent>) {
 </script>
 
 <template>
-  <TitleBar />
+  <TitleBar @settings="settingsVisible = true" />
   <EventList
     ref="eventListRef"
     @create="openCreate"
@@ -54,4 +58,5 @@ async function handleUpdate(id: string, data: Partial<DeskEvent>) {
     @save="handleSave"
     @update="handleUpdate"
   />
+  <SettingsPanel :visible="settingsVisible" @close="settingsVisible = false" />
 </template>

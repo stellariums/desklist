@@ -102,7 +102,7 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   display: flex;
   gap: 4px;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--dl-surface-dim);
   flex-shrink: 0;
 }
 .tab-btn {
@@ -118,14 +118,14 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   transition: all 0.2s;
 }
 .tab-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--dl-accent-gradient);
   color: white;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px var(--dl-accent-shadow);
   transform: translateY(-1px);
 }
 .tab-btn:hover:not(.active) {
   color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--dl-surface-hover);
 }
 .list-content {
   flex: 1;
@@ -159,19 +159,19 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
   height: 52px;
   border-radius: 16px;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--dl-accent-gradient);
   color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3), 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px var(--dl-accent-shadow), 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   padding: 0;
 }
 .fab:hover {
   transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4), 0 3px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 20px var(--dl-accent-shadow-strong), 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 .fab:active {
   transform: scale(0.98);

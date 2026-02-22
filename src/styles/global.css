@@ -8,6 +8,30 @@ html {
   color-scheme: dark;
 }
 
+:root {
+  --dl-bg: rgba(15, 15, 25, 0.65);
+  --dl-accent: #667eea;
+  --dl-accent-end: hsl(271, 49%, 46%);
+  --dl-accent-gradient: linear-gradient(135deg, #667eea, hsl(271, 49%, 46%));
+  --dl-accent-shadow: rgba(102, 126, 234, 0.3);
+  --dl-accent-shadow-strong: rgba(102, 126, 234, 0.4);
+  --dl-accent-ring: rgba(102, 126, 234, 0.2);
+  --dl-accent-subtle: rgba(102, 126, 234, 0.15);
+  --dl-accent-border-hover: rgba(102, 126, 234, 0.25);
+  --dl-accent-light: hsl(229, 78%, 75%);
+  --dl-surface: rgba(255, 255, 255, 0.08);
+  --dl-surface-dim: rgba(255, 255, 255, 0.05);
+  --dl-surface-hover: rgba(255, 255, 255, 0.06);
+  --dl-surface-active: rgba(255, 255, 255, 0.1);
+  --dl-surface-strong: rgba(255, 255, 255, 0.15);
+  --dl-surface-stronger: rgba(255, 255, 255, 0.18);
+  --dl-border-dim: rgba(255, 255, 255, 0.08);
+  --dl-border-subtle: rgba(255, 255, 255, 0.12);
+  --dl-panel-bg: rgba(20, 20, 35, 0.85);
+  --dl-overlay: rgba(0, 0, 0, 0.3);
+  --dl-dropdown-bg: #1a1a2e;
+}
+
 html, body, #app {
   height: 100%;
   width: 100%;
@@ -17,7 +41,7 @@ html, body, #app {
 }
 
 #app {
-  background: rgba(15, 15, 25, 0.65);
+  background: var(--dl-bg);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -33,7 +57,7 @@ html, body, #app {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--dl-surface-strong);
   border-radius: 3px;
   transition: background 0.2s;
 }

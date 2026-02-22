@@ -2,6 +2,7 @@
 import { getCurrentWindow } from '@tauri-apps/api/window';
 
 const appWindow = getCurrentWindow();
+const emit = defineEmits<{ settings: [] }>();
 
 async function minimize() {
   await appWindow.hide();
@@ -16,6 +17,11 @@ async function close() {
   <div class="title-bar" data-tauri-drag-region>
     <span class="title" data-tauri-drag-region>Desklist</span>
     <div class="title-bar-buttons">
+      <button class="title-btn" @click="emit('settings')" title="设置" aria-label="设置">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
       <button class="title-btn" @click="minimize" title="最小化到托盘" aria-label="最小化到托盘">
         <svg width="12" height="12" viewBox="0 0 12 12"><rect y="5" width="12" height="2" fill="currentColor"/></svg>
       </button>
@@ -37,11 +43,10 @@ async function close() {
   height: 40px;
   padding: 0 16px;
   background: transparent;
-  color: #1e293b;
   user-select: none;
   border-radius: 12px 12px 0 0;
   flex-shrink: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--dl-border-dim);
 }
 .title {
   font-size: 14px;
@@ -57,7 +62,7 @@ async function close() {
   width: 28px;
   height: 28px;
   border: none;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--dl-surface);
   color: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
   cursor: pointer;
@@ -68,7 +73,7 @@ async function close() {
   transition: all 0.2s;
 }
 .title-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--dl-surface-strong);
   color: rgba(255, 255, 255, 0.85);
   transform: scale(1.05);
 }

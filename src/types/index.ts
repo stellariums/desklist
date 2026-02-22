@@ -21,3 +21,8 @@ export interface ReminderRecord {
 }
 
 export type FilterTab = 'today' | 'upcoming' | 'completed' | 'all';
+
+export interface ThemeSettings {
+  windowOpacity: number;
+  accentColor: string;
+}

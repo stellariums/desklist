@@ -172,7 +172,7 @@ function handleSave() {
 .form-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--dl-overlay);
   backdrop-filter: blur(4px);
   z-index: 100;
   display: flex;
@@ -181,7 +181,7 @@ function handleSave() {
 .form-panel {
   width: 100%;
   max-width: 320px;
-  background: rgba(20, 20, 35, 0.85);
+  background: var(--dl-panel-bg);
   backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
@@ -199,16 +199,15 @@ function handleSave() {
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.3px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--dl-border-dim);
 }
 .form-close {
   width: 28px;
   height: 28px;
   border: none;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--dl-surface);
   color: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,24 +241,24 @@ function handleSave() {
 }
 .form-input, .form-textarea {
   padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--dl-border-subtle);
   border-radius: 10px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--dl-surface);
   outline: none;
   transition: all 0.2s;
   font-family: inherit;
 }
 .form-input:focus, .form-textarea:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  border-color: var(--dl-accent);
+  box-shadow: 0 0 0 3px var(--dl-accent-ring);
 }
 .form-input::placeholder, .form-textarea::placeholder {
   color: rgba(255, 255, 255, 0.3);
 }
 .form-input option {
-  background: #1a1a2e;
+  background: var(--dl-dropdown-bg);
   color: rgba(255, 255, 255, 0.9);
 }
 .form-textarea {
@@ -269,7 +268,7 @@ function handleSave() {
   display: flex;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--dl-border-dim);
 }
 .btn {
   flex: 1;
@@ -282,21 +281,21 @@ function handleSave() {
   transition: all 0.2s;
 }
 .btn-cancel {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--dl-surface-active);
   color: rgba(255, 255, 255, 0.7);
 }
 .btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--dl-surface-stronger);
   color: rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
 }
 .btn-save {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--dl-accent-gradient);
   color: white;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px var(--dl-accent-shadow);
 }
 .btn-save:hover {
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px var(--dl-accent-shadow-strong);
   transform: translateY(-1px);
 }
 .btn-save:disabled {
