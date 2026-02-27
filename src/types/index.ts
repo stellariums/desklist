@@ -26,3 +26,7 @@ export interface ThemeSettings {
   windowOpacity: number;
   accentColor: string;
 }
+
+export interface AppSettings {
+  defaultRemindOnTime: number;
+}

@@ -1,7 +1,8 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref, watch } from 'vue';
 import type { DeskEvent } from '../types';
 import ReminderConfig from './ReminderConfig.vue';
+import { useAppSettings } from '../composables/useAppSettings';
 
 const props = defineProps<{
   visible: boolean;
@@ -21,6 +22,9 @@ const remindOnTime = ref(1);
 const advanceMinutes = ref(0);
 const recurrence = ref('none');
 const recurrenceEnd = ref('');
+const appSettingsState = useAppSettings();
+appSettingsState.init();
+const { settings: appSettings } = appSettingsState;
 
 watch(() => props.visible, (val) => {
   if (val && props.editEvent) {
@@ -43,7 +47,7 @@ function resetForm() {
   now.setMinutes(now.getMinutes() + 30);
   now.setSeconds(0, 0);
   eventTime.value = toLocalDatetime(now.toISOString());
-  remindOnTime.value = 1;
+  remindOnTime.value = appSettings.defaultRemindOnTime;
   advanceMinutes.value = 0;
   recurrence.value = 'none';
   recurrenceEnd.value = '';

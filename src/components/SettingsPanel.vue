@@ -1,9 +1,18 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { useTheme } from '../composables/useTheme';
+import { useAppSettings } from '../composables/useAppSettings';
 
 defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ close: [] }>();
 const { settings, resetDefaults } = useTheme();
+const appSettingsState = useAppSettings();
+appSettingsState.init();
+const { settings: appSettings, resetDefaults: resetAppDefaults } = appSettingsState;
+
+function handleResetDefaults() {
+  resetDefaults();
+  resetAppDefaults();
+}
 </script>
 
 <template>
@@ -31,9 +40,20 @@ const { settings, resetDefaults } = useTheme();
             <label>主题色</label>
             <input type="color" v-model="settings.accentColor" class="color-input" />
           </div>
+          <div class="form-group">
+            <label>新建事件默认提醒</label>
+            <label class="switch-row">
+              <input
+                type="checkbox"
+                :checked="appSettings.defaultRemindOnTime === 1"
+                @change="appSettings.defaultRemindOnTime = ($event.target as HTMLInputElement).checked ? 1 : 0"
+              />
+              <span>到期提醒默认开启</span>
+            </label>
+          </div>
         </div>
         <div class="form-footer">
-          <button class="btn btn-reset" @click="resetDefaults">重置默认</button>
+          <button class="btn btn-reset" @click="handleResetDefaults">重置默认</button>
           <button class="btn btn-done" @click="emit('close')">完成</button>
         </div>
       </div>
@@ -124,6 +144,20 @@ const { settings, resetDefaults } = useTheme();
   color: rgba(255, 255, 255, 0.7);
   min-width: 40px;
   text-align: right;
+}
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+}
+.switch-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--dl-accent);
+  cursor: pointer;
 }
 .color-input {
   width: 48px;

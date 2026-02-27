@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import type { DeskEvent, FilterTab } from '../types';
 import { useEvents } from '../composables/useEvents';
@@ -10,7 +10,7 @@ const activeTab = ref<FilterTab>('today');
 
 const tabs: { key: FilterTab; label: string }[] = [
   { key: 'today', label: '今天' },
-  { key: 'upcoming', label: '即将' },
+  { key: 'upcoming', label: '未完成' },
   { key: 'completed', label: '已完成' },
   { key: 'all', label: '全部' },
 ];

@@ -14,7 +14,6 @@ export function useEvents() {
     loading.value = true;
     try {
       const db = await getDb();
-      const now = new Date().toISOString();
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
       const todayEnd = new Date();
@@ -29,8 +28,8 @@ export function useEvents() {
           params = [todayStart.toISOString(), todayEnd.toISOString()];
           break;
         case 'upcoming':
-          query = 'SELECT * FROM events WHERE event_time > $1 AND completed = 0 ORDER BY event_time ASC';
-          params = [now];
+          query = 'SELECT * FROM events WHERE completed = 0 ORDER BY event_time ASC';
+          params = [];
           break;
         case 'completed':
           query = 'SELECT * FROM events WHERE completed = 1 ORDER BY updated_at DESC';
