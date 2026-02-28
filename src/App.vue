@@ -4,6 +4,7 @@ import type { DeskEvent } from './types';
 import { useEvents } from './composables/useEvents';
 import { useTheme } from './composables/useTheme';
 import { useAppSettings } from './composables/useAppSettings';
+import { useLocale } from './composables/useLocale';
 import TitleBar from './components/TitleBar.vue';
 import EventList from './components/EventList.vue';
 import EventForm from './components/EventForm.vue';
@@ -12,6 +13,7 @@ import SettingsPanel from './components/SettingsPanel.vue';
 const { createEvent, updateEvent } = useEvents();
 useTheme().init();
 useAppSettings().init();
+useLocale().init();
 
 const formVisible = ref(false);
 const settingsVisible = ref(false);

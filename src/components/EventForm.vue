@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import type { DeskEvent } from '../types';
 import ReminderConfig from './ReminderConfig.vue';
 import { useAppSettings } from '../composables/useAppSettings';
+import { useLocale } from '../composables/useLocale';
 
 const props = defineProps<{
   visible: boolean;
@@ -25,6 +26,7 @@ const recurrenceEnd = ref('');
 const appSettingsState = useAppSettings();
 appSettingsState.init();
 const { settings: appSettings } = appSettingsState;
+const { t } = useLocale();
 
 watch(() => props.visible, (val) => {
   if (val && props.editEvent) {
@@ -112,8 +114,8 @@ function handleSave() {
     <div v-if="visible" class="form-overlay" @click.self="emit('close')">
       <div class="form-panel">
         <div class="form-header">
-          <span>{{ editEvent ? '编辑事件' : '新建事件' }}</span>
-          <button class="form-close" @click="emit('close')" aria-label="关闭">
+          <span>{{ editEvent ? t.editEvent : t.newEvent }}</span>
+          <button class="form-close" @click="emit('close')" :aria-label="t.close">
             <svg width="14" height="14" viewBox="0 0 14 14">
               <line x1="3" y1="3" x2="11" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <line x1="11" y1="3" x2="3" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -123,22 +125,22 @@ function handleSave() {
 
         <div class="form-body">
           <div class="form-group">
-            <label>标题</label>
-            <input v-model="title" type="text" placeholder="事件标题" class="form-input" />
+            <label>{{ t.fieldTitle }}</label>
+            <input v-model="title" type="text" :placeholder="t.titlePlaceholder" class="form-input" />
           </div>
 
           <div class="form-group">
-            <label>描述</label>
-            <textarea v-model="description" placeholder="事件描述（可选）" class="form-textarea" rows="2"></textarea>
+            <label>{{ t.fieldDescription }}</label>
+            <textarea v-model="description" :placeholder="t.descPlaceholder" class="form-textarea" rows="2"></textarea>
           </div>
 
           <div class="form-group">
-            <label>时间</label>
+            <label>{{ t.fieldTime }}</label>
             <input v-model="eventTime" type="datetime-local" class="form-input" />
           </div>
 
           <div class="form-group">
-            <label>提醒</label>
+            <label>{{ t.fieldReminder }}</label>
             <ReminderConfig
               :remind-on-time="remindOnTime"
               :advance-minutes="advanceMinutes"
@@ -148,24 +150,24 @@ function handleSave() {
           </div>
 
           <div class="form-group">
-            <label>重复</label>
+            <label>{{ t.fieldRecurrence }}</label>
             <select v-model="recurrence" class="form-input">
-              <option value="none">不重复</option>
-              <option value="daily">每天</option>
-              <option value="weekly">每周</option>
-              <option value="monthly">每月</option>
+              <option value="none">{{ t.recurrenceNone }}</option>
+              <option value="daily">{{ t.recurrenceDaily }}</option>
+              <option value="weekly">{{ t.recurrenceWeekly }}</option>
+              <option value="monthly">{{ t.recurrenceMonthly }}</option>
             </select>
           </div>
 
           <div v-if="recurrence !== 'none'" class="form-group">
-            <label>重复截止</label>
+            <label>{{ t.fieldRecurrenceEnd }}</label>
             <input v-model="recurrenceEnd" type="datetime-local" class="form-input" />
           </div>
         </div>
 
         <div class="form-footer">
-          <button class="btn btn-cancel" @click="emit('close')">取消</button>
-          <button class="btn btn-save" @click="handleSave" :disabled="!title.trim() || !eventTime">保存</button>
+          <button class="btn btn-cancel" @click="emit('close')">{{ t.cancel }}</button>
+          <button class="btn btn-save" @click="handleSave" :disabled="!title.trim() || !eventTime">{{ t.save }}</button>
         </div>
       </div>
     </div>

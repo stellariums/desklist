@@ -1,6 +1,7 @@
 ﻿<script setup lang="ts">
 import { useTheme } from '../composables/useTheme';
 import { useAppSettings } from '../composables/useAppSettings';
+import { useLocale } from '../composables/useLocale';
 
 defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ close: [] }>();
@@ -8,6 +9,7 @@ const { settings, resetDefaults } = useTheme();
 const appSettingsState = useAppSettings();
 appSettingsState.init();
 const { settings: appSettings, resetDefaults: resetAppDefaults } = appSettingsState;
+const { t, locale, setLocale } = useLocale();
 
 function handleResetDefaults() {
   resetDefaults();
@@ -20,8 +22,8 @@ function handleResetDefaults() {
     <div v-if="visible" class="form-overlay" @click.self="emit('close')">
       <div class="form-panel">
         <div class="form-header">
-          <span>外观设置</span>
-          <button class="form-close" @click="emit('close')" aria-label="关闭">
+          <span>{{ t.appearanceSettings }}</span>
+          <button class="form-close" @click="emit('close')" :aria-label="t.close">
             <svg width="14" height="14" viewBox="0 0 14 14">
               <line x1="3" y1="3" x2="11" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <line x1="11" y1="3" x2="3" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -30,31 +32,46 @@ function handleResetDefaults() {
         </div>
         <div class="form-body">
           <div class="form-group">
-            <label>窗口透明度</label>
+            <label>{{ t.language }}</label>
+            <div class="lang-toggle">
+              <button
+                class="lang-btn"
+                :class="{ active: locale.locale === 'zh-CN' }"
+                @click="setLocale('zh-CN')"
+              >中文</button>
+              <button
+                class="lang-btn"
+                :class="{ active: locale.locale === 'en' }"
+                @click="setLocale('en')"
+              >English</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ t.windowOpacity }}</label>
             <div class="range-row">
               <input type="range" :value="settings.windowOpacity * 100" @input="settings.windowOpacity = Number(($event.target as HTMLInputElement).value) / 100" min="10" max="100" step="5" class="range-input" />
               <span class="range-value">{{ Math.round(settings.windowOpacity * 100) }}%</span>
             </div>
           </div>
           <div class="form-group">
-            <label>主题色</label>
+            <label>{{ t.themeColor }}</label>
             <input type="color" v-model="settings.accentColor" class="color-input" />
           </div>
           <div class="form-group">
-            <label>新建事件默认提醒</label>
+            <label>{{ t.defaultReminderLabel }}</label>
             <label class="switch-row">
               <input
                 type="checkbox"
                 :checked="appSettings.defaultRemindOnTime === 1"
                 @change="appSettings.defaultRemindOnTime = ($event.target as HTMLInputElement).checked ? 1 : 0"
               />
-              <span>到期提醒默认开启</span>
+              <span>{{ t.defaultReminderCheck }}</span>
             </label>
           </div>
         </div>
         <div class="form-footer">
-          <button class="btn btn-reset" @click="handleResetDefaults">重置默认</button>
-          <button class="btn btn-done" @click="emit('close')">完成</button>
+          <button class="btn btn-reset" @click="handleResetDefaults">{{ t.resetDefaults }}</button>
+          <button class="btn btn-done" @click="emit('close')">{{ t.done }}</button>
         </div>
       </div>
     </div>
@@ -158,6 +175,32 @@ function handleResetDefaults() {
   height: 16px;
   accent-color: var(--dl-accent);
   cursor: pointer;
+}
+.lang-toggle {
+  display: flex;
+  gap: 6px;
+}
+.lang-btn {
+  flex: 1;
+  padding: 7px 0;
+  border: 1px solid var(--dl-border-subtle);
+  border-radius: 8px;
+  background: var(--dl-surface);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-btn:hover {
+  background: var(--dl-surface-stronger);
+  color: rgba(255, 255, 255, 0.9);
+}
+.lang-btn.active {
+  background: var(--dl-accent-gradient);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 2px 8px var(--dl-accent-shadow);
 }
 .color-input {
   width: 48px;

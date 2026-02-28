@@ -1,0 +1,58 @@
+export const zhCN = {
+  // TitleBar
+  settings: '设置',
+  minimizeToTray: '最小化到托盘',
+  closeToTray: '关闭到托盘',
+
+  // EventList
+  tabToday: '今天',
+  tabIncomplete: '未完成',
+  tabCompleted: '已完成',
+  tabAll: '全部',
+  loading: '加载中...',
+  noEvents: '暂无事件',
+
+  // EventForm
+  editEvent: '编辑事件',
+  newEvent: '新建事件',
+  fieldTitle: '标题',
+  fieldDescription: '描述',
+  fieldTime: '时间',
+  fieldReminder: '提醒',
+  fieldRecurrence: '重复',
+  fieldRecurrenceEnd: '重复截止',
+  titlePlaceholder: '事件标题',
+  descPlaceholder: '事件描述（可选）',
+  recurrenceNone: '不重复',
+  recurrenceDaily: '每天',
+  recurrenceWeekly: '每周',
+  recurrenceMonthly: '每月',
+  cancel: '取消',
+  save: '保存',
+  close: '关闭',
+
+  // EventCard
+  markIncomplete: '标记为未完成',
+  markComplete: '标记为完成',
+  deleteEvent: '删除事件',
+
+  // ReminderConfig
+  remindOnTime: '到期提醒',
+  advanceReminder: '提前提醒',
+  noReminder: '不提醒',
+  min5Before: '5分钟前',
+  min15Before: '15分钟前',
+  min30Before: '30分钟前',
+  hour1Before: '1小时前',
+  day1Before: '1天前',
+
+  // SettingsPanel
+  appearanceSettings: '外观设置',
+  windowOpacity: '窗口透明度',
+  themeColor: '主题色',
+  defaultReminderLabel: '新建事件默认提醒',
+  defaultReminderCheck: '到期提醒默认开启',
+  resetDefaults: '重置默认',
+  done: '完成',
+  language: '语言',
+};

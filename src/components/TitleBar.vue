@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { useLocale } from '../composables/useLocale';
 
 const appWindow = getCurrentWindow();
 const emit = defineEmits<{ settings: [] }>();
+const { t } = useLocale();
 
 async function minimize() {
   await appWindow.hide();
@@ -17,15 +19,15 @@ async function close() {
   <div class="title-bar" data-tauri-drag-region>
     <span class="title" data-tauri-drag-region>Desklist</span>
     <div class="title-bar-buttons">
-      <button class="title-btn" @click="emit('settings')" title="设置" aria-label="设置">
+      <button class="title-btn" @click="emit('settings')" :title="t.settings" :aria-label="t.settings">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
       </button>
-      <button class="title-btn" @click="minimize" title="最小化到托盘" aria-label="最小化到托盘">
+      <button class="title-btn" @click="minimize" :title="t.minimizeToTray" :aria-label="t.minimizeToTray">
         <svg width="12" height="12" viewBox="0 0 12 12"><rect y="5" width="12" height="2" fill="currentColor"/></svg>
       </button>
-      <button class="title-btn close-btn" @click="close" title="关闭到托盘" aria-label="关闭到托盘">
+      <button class="title-btn close-btn" @click="close" :title="t.closeToTray" :aria-label="t.closeToTray">
         <svg width="12" height="12" viewBox="0 0 12 12">
           <line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="2"/>
           <line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" stroke-width="2"/>

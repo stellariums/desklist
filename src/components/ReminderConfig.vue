@@ -1,4 +1,7 @@
 ﻿<script setup lang="ts">
+import { computed } from 'vue';
+import { useLocale } from '../composables/useLocale';
+
 defineProps<{
   remindOnTime: number;
   advanceMinutes: number;
@@ -9,14 +12,16 @@ const emit = defineEmits<{
   'update:advanceMinutes': [value: number];
 }>();
 
-const advanceOptions = [
-  { label: '不提醒', value: 0 },
-  { label: '5分钟前', value: 5 },
-  { label: '15分钟前', value: 15 },
-  { label: '30分钟前', value: 30 },
-  { label: '1小时前', value: 60 },
-  { label: '1天前', value: 1440 },
-];
+const { t } = useLocale();
+
+const advanceOptions = computed(() => [
+  { label: t.value.noReminder, value: 0 },
+  { label: t.value.min5Before, value: 5 },
+  { label: t.value.min15Before, value: 15 },
+  { label: t.value.min30Before, value: 30 },
+  { label: t.value.hour1Before, value: 60 },
+  { label: t.value.day1Before, value: 1440 },
+]);
 </script>
 
 <template>
@@ -27,10 +32,10 @@ const advanceOptions = [
         :checked="remindOnTime === 1"
         @change="emit('update:remindOnTime', ($event.target as HTMLInputElement).checked ? 1 : 0)"
       />
-      <span>到期提醒</span>
+      <span>{{ t.remindOnTime }}</span>
     </label>
     <label class="reminder-row">
-      <span class="reminder-label">提前提醒</span>
+      <span class="reminder-label">{{ t.advanceReminder }}</span>
       <select
         class="reminder-select"
         :value="advanceMinutes"

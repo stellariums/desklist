@@ -1,19 +1,21 @@
 ﻿<script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import type { DeskEvent, FilterTab } from '../types';
 import { useEvents } from '../composables/useEvents';
+import { useLocale } from '../composables/useLocale';
 import EventCard from './EventCard.vue';
 
 const { events, loading, fetchEvents, toggleComplete, deleteEvent } = useEvents();
+const { t } = useLocale();
 
 const activeTab = ref<FilterTab>('today');
 
-const tabs: { key: FilterTab; label: string }[] = [
-  { key: 'today', label: '今天' },
-  { key: 'upcoming', label: '未完成' },
-  { key: 'completed', label: '已完成' },
-  { key: 'all', label: '全部' },
-];
+const tabs = computed<{ key: FilterTab; label: string }[]>(() => [
+  { key: 'today', label: t.value.tabToday },
+  { key: 'upcoming', label: t.value.tabIncomplete },
+  { key: 'completed', label: t.value.tabCompleted },
+  { key: 'all', label: t.value.tabAll },
+]);
 
 const emit = defineEmits<{
   create: [];
@@ -56,7 +58,7 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
     </div>
 
     <div class="list-content">
-      <div v-if="loading" class="empty-state">加载中...</div>
+      <div v-if="loading" class="empty-state">{{ t.loading }}</div>
       <div v-else-if="events.length === 0" class="empty-state">
         <div class="empty-icon">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -66,7 +68,7 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
             <circle cx="20" cy="12" r="2" fill="currentColor"/>
           </svg>
         </div>
-        <span>暂无事件</span>
+        <span>{{ t.noEvents }}</span>
       </div>
       <div v-else class="card-list">
         <EventCard
@@ -80,7 +82,7 @@ defineExpose({ refresh: () => fetchEvents(activeTab.value) });
       </div>
     </div>
 
-    <button class="fab" @click="emit('create')" aria-label="新建事件">
+    <button class="fab" @click="emit('create')" :aria-label="t.newEvent">
       <svg width="20" height="20" viewBox="0 0 20 20">
         <line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>

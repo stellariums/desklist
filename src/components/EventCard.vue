@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DeskEvent } from '../types';
+import { useLocale } from '../composables/useLocale';
 
 defineProps<{
   event: DeskEvent;
@@ -10,6 +11,8 @@ const emit = defineEmits<{
   edit: [event: DeskEvent];
   delete: [id: string];
 }>();
+
+const { t } = useLocale();
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
@@ -25,8 +28,13 @@ function isOverdue(event: DeskEvent): boolean {
 }
 
 function getRecurrenceLabel(r: string): string {
-  const map: Record<string, string> = { daily: '每天', weekly: '每周', monthly: '每月' };
-  return map[r] || '';
+  const map: Record<string, keyof typeof t.value> = {
+    daily: 'recurrenceDaily',
+    weekly: 'recurrenceWeekly',
+    monthly: 'recurrenceMonthly',
+  };
+  const key = map[r];
+  return key ? t.value[key] : '';
 }
 </script>
 
@@ -37,7 +45,7 @@ function getRecurrenceLabel(r: string): string {
         class="checkbox"
         :class="{ checked: event.completed }"
         @click="emit('toggle', event.id)"
-        :aria-label="event.completed ? '标记为未完成' : '标记为完成'"
+        :aria-label="event.completed ? t.markIncomplete : t.markComplete"
       >
         <svg v-if="event.completed" width="14" height="14" viewBox="0 0 14 14">
           <polyline points="2,7 6,11 12,3" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -52,7 +60,7 @@ function getRecurrenceLabel(r: string): string {
         <span v-if="event.remind_at || event.remind_on_time" class="card-reminder">bell</span>
       </div>
     </div>
-    <button class="delete-btn" @click.stop="emit('delete', event.id)" aria-label="删除事件">
+    <button class="delete-btn" @click.stop="emit('delete', event.id)" :aria-label="t.deleteEvent">
       <svg width="14" height="14" viewBox="0 0 14 14">
         <line x1="3" y1="3" x2="11" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         <line x1="11" y1="3" x2="3" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
