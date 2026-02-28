@@ -1,5 +1,7 @@
 # Desklist
 
+[中文](README.zh-CN.md) | English
+
 A lightweight Windows desktop todo/reminder app. It features a borderless always-on-top window, minimizes to the system tray, and supports scheduled reminders and recurring events.
 
 ## Features

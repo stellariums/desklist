@@ -1,5 +1,7 @@
 ﻿# Desklist
 
+English | [中文](README.zh-CN.md)
+
 Windows 桌面待办/提醒小工具。无边框置顶窗口，最小化到系统托盘，支持定时提醒和周期事件。
 
 ## 功能
