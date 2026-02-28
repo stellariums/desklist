@@ -1,68 +1,68 @@
-﻿# Desklist
+# Desklist
 
-Windows 桌面待办/提醒小工具。无边框置顶窗口，最小化到系统托盘，支持定时提醒和周期事件。
+A lightweight Windows desktop todo/reminder app. It features a borderless always-on-top window, minimizes to the system tray, and supports scheduled reminders and recurring events.
 
-## 功能
+## Features
 
-- 事件创建、编辑、删除，支持标题、描述、时间
-- 四种筛选视图：今天 / 未完成 / 已完成 / 全部
-- 定时提醒：到期提醒 + 可选提前提醒（5/15/30/60 分钟或 1 天前）
-- 周期事件：每天、每周、每月，支持设置截止时间
-- 完成周期事件后自动生成下一次
-- 系统托盘常驻，关闭窗口可隐藏到托盘
-- 单实例运行
-- 深色毛玻璃 UI（Windows Acrylic）
+- Create, edit, and delete events with title, description, and time
+- Four filter views: Today / Incomplete / Completed / All
+- Scheduled reminders: due-time reminders + optional advance reminders (5/15/30/60 minutes or 1 day before)
+- Recurring events: daily, weekly, monthly, with optional end time
+- Automatically generates the next occurrence after completing a recurring event
+- Runs in the system tray and can hide to tray when the window is closed
+- Single-instance application
+- Dark frosted-glass UI (Windows Acrylic)
 
-## 技术栈
+## Tech Stack
 
-- 前端：Vue 3 + TypeScript + Vite
-- 桌面框架：Tauri 2
-- 数据存储：SQLite（`tauri-plugin-sql`）
-- 提醒调度：Rust + Tokio
-- 通知：`tauri-plugin-notification`
+- Frontend: Vue 3 + TypeScript + Vite
+- Desktop framework: Tauri 2
+- Data storage: SQLite (`tauri-plugin-sql`)
+- Reminder scheduling: Rust + Tokio
+- Notifications: `tauri-plugin-notification`
 
-## 开发
+## Development
 
 ```bash
-# 安装依赖
+# Install dependencies
 npm install
 
-# 开发模式
+# Development mode
 npm run tauri dev
 
-# 生产构建
+# Production build
 npm run tauri build
 ```
 
-## 更新日志
+## Changelog
 
 ### v1.2.1
 
-- 将列表筛选“即将”调整为“未完成”，显示全部未完成任务
-- 新增设置项：可配置“新建事件时到期提醒默认开启/关闭”
-- 修复多个界面中文文案乱码问题（新建事件、提醒配置、设置面板、README）
+- Changed list filter from "Upcoming" to "Incomplete" to show all unfinished tasks
+- Added a setting to configure whether due-time reminders are enabled by default for new events
+- Fixed garbled Chinese text in multiple UI areas (new event, reminder configuration, settings panel, README)
 
 ### v1.2.0
 
-- 新增外观设置面板（标题栏齿轮按钮进入）
-- 支持窗口透明度调节（10%~100%）
-- 支持主题色自定义
-- 设置使用 `tauri-plugin-store` 持久化
+- Added an appearance settings panel (accessible from the gear button in the title bar)
+- Added adjustable window opacity (10%~100%)
+- Added customizable theme color
+- Persisted settings with `tauri-plugin-store`
 
 ### v1.1.0
 
-- 重构深色毛玻璃风格，启用 Windows Acrylic 窗口特效
-- 统一主要组件深色主题适配
+- Refactored dark frosted-glass style and enabled Windows Acrylic window effects
+- Unified dark-theme support across major components
 
 ### v1.0.2
 
-- 修复通知时间显示问题
-- 改进 UI 视觉和交互细节
+- Fixed notification time display issues
+- Improved UI visuals and interaction details
 
 ### v1.0.1
 
-- 初始发布
+- Initial release
 
-## 许可证
+## License
 
 [MIT](LICENSE)
