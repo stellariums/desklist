@@ -38,6 +38,11 @@ npm run tauri build
 
 ## Changelog
 
+### v1.3.0
+
+- Added language switching (Chinese / English) in the settings panel
+- All UI text now responds to language changes instantly, with preference persisted across restarts
+
 ### v1.2.1
 
 - Changed list filter from "Upcoming" to "Incomplete" to show all unfinished tasks
