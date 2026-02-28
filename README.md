@@ -63,6 +63,10 @@ npm run tauri build
 
 ### v1.0.1
 
+- Fixed reminder notifications playing no sound; the system default alert sound now plays when a reminder fires (#1)
+
+### v1.0.0
+
 - Initial release
 
 ## License
