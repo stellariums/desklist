@@ -28,4 +28,4 @@ jobs:
           plugins: 'code-review@claude-code-plugins'
           prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
         env:
-          ANTHROPIC_BASE_URL: https://www.fucheers.top
+          ANTHROPIC_BASE_URL: https://a-ocnfniawgw.cn-shanghai.fcapp.run
