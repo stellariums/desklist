@@ -7,7 +7,6 @@ defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ close: [] }>();
 const { settings, resetDefaults } = useTheme();
 const appSettingsState = useAppSettings();
-appSettingsState.init();
 const { settings: appSettings, resetDefaults: resetAppDefaults } = appSettingsState;
 const { t, locale, setLocale } = useLocale();
 

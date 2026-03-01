@@ -14,6 +14,12 @@ const emit = defineEmits<{
 
 const { t } = useLocale();
 
+const RECURRENCE_KEY_MAP: Record<string, 'recurrenceDaily' | 'recurrenceWeekly' | 'recurrenceMonthly'> = {
+  daily: 'recurrenceDaily',
+  weekly: 'recurrenceWeekly',
+  monthly: 'recurrenceMonthly',
+};
+
 function formatTime(iso: string): string {
   const d = new Date(iso);
   const month = d.getMonth() + 1;
@@ -28,12 +34,7 @@ function isOverdue(event: DeskEvent): boolean {
 }
 
 function getRecurrenceLabel(r: string): string {
-  const map: Record<string, keyof typeof t.value> = {
-    daily: 'recurrenceDaily',
-    weekly: 'recurrenceWeekly',
-    monthly: 'recurrenceMonthly',
-  };
-  const key = map[r];
+  const key = RECURRENCE_KEY_MAP[r];
   return key ? t.value[key] : '';
 }
 </script>

@@ -24,7 +24,6 @@ const advanceMinutes = ref(0);
 const recurrence = ref('none');
 const recurrenceEnd = ref('');
 const appSettingsState = useAppSettings();
-appSettingsState.init();
 const { settings: appSettings } = appSettingsState;
 const { t } = useLocale();
 

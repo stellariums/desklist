@@ -8,7 +8,7 @@ export type Locale = 'zh-CN' | 'en';
 const messages = { 'zh-CN': zhCN, en } as const;
 
 const state = reactive<{ locale: Locale }>({ locale: 'zh-CN' });
-const store = new LazyStore('app-settings.json');
+const store = new LazyStore('locale.json');
 let initPromise: Promise<void> | null = null;
 
 export function useLocale() {
