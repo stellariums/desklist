@@ -8,6 +8,7 @@ A lightweight Windows desktop todo/reminder app. It features a borderless always
 
 - Create, edit, and delete events with title, description, and time
 - Four filter views: Today / Incomplete / Completed / All
+- **Calendar view**: switch between list and calendar views via the title bar button; dates with pending events show a dot; click a date to see that day's events
 - Scheduled reminders: due-time reminders + optional advance reminders (5/15/30/60 minutes or 1 day before)
 - Recurring events: daily, weekly, monthly, with optional end time
 - Automatically generates the next occurrence after completing a recurring event
@@ -37,6 +38,14 @@ npm run tauri build
 ```
 
 ## Changelog
+
+### v1.4.0
+
+- Added calendar view: switch between list and calendar via the title bar button
+- Dates with pending events display a blue dot; today's date is highlighted
+- Click a date to show that day's pending events below the grid, with complete/delete/edit support
+- Navigate months with `<` / `>` buttons; dots refresh automatically
+- Month labels adapt to language (e.g. "March 2026" in English, "2026年3月" in Chinese)
 
 ### v1.3.0
 
