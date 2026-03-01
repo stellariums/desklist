@@ -38,20 +38,25 @@ function lighten(hex: string, amount: number) {
   return `hsl(${h}, ${s}%, ${Math.min(l + amount, 95)}%)`;
 }
 
+function isValidHexColor(color: string): boolean {
+  return /^#[0-9A-Fa-f]{6}$/.test(color);
+}
+
 function applyTheme() {
-  const { r, g, b } = hexToRgb(settings.accentColor);
-  const end = deriveGradientEnd(settings.accentColor);
+  const color = isValidHexColor(settings.accentColor) ? settings.accentColor : DEFAULTS.accentColor;
+  const { r, g, b } = hexToRgb(color);
+  const end = deriveGradientEnd(color);
   const s = document.documentElement.style;
   s.setProperty('--dl-bg', `rgba(15,15,25,${settings.windowOpacity})`);
-  s.setProperty('--dl-accent', settings.accentColor);
+  s.setProperty('--dl-accent', color);
   s.setProperty('--dl-accent-end', end);
-  s.setProperty('--dl-accent-gradient', `linear-gradient(135deg, ${settings.accentColor}, ${end})`);
+  s.setProperty('--dl-accent-gradient', `linear-gradient(135deg, ${color}, ${end})`);
   s.setProperty('--dl-accent-shadow', `rgba(${r},${g},${b},0.3)`);
   s.setProperty('--dl-accent-shadow-strong', `rgba(${r},${g},${b},0.4)`);
   s.setProperty('--dl-accent-ring', `rgba(${r},${g},${b},0.2)`);
   s.setProperty('--dl-accent-subtle', `rgba(${r},${g},${b},0.15)`);
   s.setProperty('--dl-accent-border-hover', `rgba(${r},${g},${b},0.25)`);
-  s.setProperty('--dl-accent-light', lighten(settings.accentColor, 30));
+  s.setProperty('--dl-accent-light', lighten(color, 30));
 }
 
 export function useTheme() {

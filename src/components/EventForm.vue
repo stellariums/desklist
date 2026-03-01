@@ -125,12 +125,12 @@ function handleSave() {
         <div class="form-body">
           <div class="form-group">
             <label>{{ t.fieldTitle }}</label>
-            <input v-model="title" type="text" :placeholder="t.titlePlaceholder" class="form-input" />
+            <input v-model="title" type="text" maxlength="200" :placeholder="t.titlePlaceholder" class="form-input" />
           </div>
 
           <div class="form-group">
             <label>{{ t.fieldDescription }}</label>
-            <textarea v-model="description" :placeholder="t.descPlaceholder" class="form-textarea" rows="2"></textarea>
+            <textarea v-model="description" maxlength="1000" :placeholder="t.descPlaceholder" class="form-textarea" rows="2"></textarea>
           </div>
 
           <div class="form-group">

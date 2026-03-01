@@ -26,7 +26,8 @@ pub fn run() {
 
             scheduler::start_reminder_scheduler(app.handle().clone());
 
-            let window = app.get_webview_window("main").unwrap();
+            let window = app.get_webview_window("main")
+                .ok_or("Main window 'main' not found")?;
             let window_clone = window.clone();
             window.on_window_event(move |event| {
                 if let tauri::WindowEvent::CloseRequested { api, .. } = event {

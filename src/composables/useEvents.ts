@@ -2,6 +2,13 @@ import { ref } from 'vue';
 import Database from '@tauri-apps/plugin-sql';
 import type { DeskEvent, FilterTab } from '../types';
 
+const VALID_RECURRENCES = ['none', 'daily', 'weekly', 'monthly'] as const;
+type Recurrence = typeof VALID_RECURRENCES[number];
+
+function toSafeRecurrence(r: string | undefined): Recurrence {
+  return VALID_RECURRENCES.includes(r as Recurrence) ? (r as Recurrence) : 'none';
+}
+
 async function getDb() {
   return await Database.load('sqlite:desklist.db');
 }
@@ -54,7 +61,7 @@ export function useEvents() {
     await db.execute(
       `INSERT INTO events (id, title, description, event_time, completed, remind_at, remind_on_time, recurrence, recurrence_end, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-      [id, event.title, event.description || '', event.event_time, 0, event.remind_at, event.remind_on_time ?? 1, event.recurrence || 'none', event.recurrence_end, now, now]
+      [id, event.title, event.description || '', event.event_time, 0, event.remind_at, event.remind_on_time ?? 1, toSafeRecurrence(event.recurrence), event.recurrence_end, now, now]
     );
 
     await generateReminders(db, id, event.event_time, event.remind_at, event.remind_on_time ?? 1);
@@ -74,7 +81,7 @@ export function useEvents() {
     if (event.event_time !== undefined) { fields.push(`event_time = $${paramIndex++}`); values.push(event.event_time); }
     if (event.remind_at !== undefined) { fields.push(`remind_at = $${paramIndex++}`); values.push(event.remind_at); }
     if (event.remind_on_time !== undefined) { fields.push(`remind_on_time = $${paramIndex++}`); values.push(event.remind_on_time); }
-    if (event.recurrence !== undefined) { fields.push(`recurrence = $${paramIndex++}`); values.push(event.recurrence); }
+    if (event.recurrence !== undefined) { fields.push(`recurrence = $${paramIndex++}`); values.push(toSafeRecurrence(event.recurrence)); }
     if (event.recurrence_end !== undefined) { fields.push(`recurrence_end = $${paramIndex++}`); values.push(event.recurrence_end); }
 
     fields.push(`updated_at = $${paramIndex++}`);

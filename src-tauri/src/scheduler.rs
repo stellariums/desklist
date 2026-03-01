@@ -10,7 +10,10 @@ pub fn start_reminder_scheduler(app: AppHandle) {
         loop {
             tokio::time::sleep(Duration::from_secs(30)).await;
             if let Err(e) = check_reminders(&app).await {
+                #[cfg(debug_assertions)]
                 eprintln!("Scheduler error: {}", e);
+                #[cfg(not(debug_assertions))]
+                let _ = e;
             }
         }
     });
