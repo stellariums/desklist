@@ -9,6 +9,7 @@ import TitleBar from './components/TitleBar.vue';
 import EventList from './components/EventList.vue';
 import EventForm from './components/EventForm.vue';
 import SettingsPanel from './components/SettingsPanel.vue';
+import CalendarView from './components/CalendarView.vue';
 
 const { createEvent, updateEvent } = useEvents();
 useTheme().init();
@@ -19,6 +20,8 @@ const formVisible = ref(false);
 const settingsVisible = ref(false);
 const editEvent = ref<DeskEvent | null>(null);
 const eventListRef = ref<InstanceType<typeof EventList> | null>(null);
+const calendarMode = ref(false);
+const calendarViewRef = ref<InstanceType<typeof CalendarView> | null>(null);
 
 function openCreate() {
   editEvent.value = null;
@@ -35,26 +38,27 @@ function closeForm() {
   editEvent.value = null;
 }
 
+function toggleCalendar() {
+  calendarMode.value = !calendarMode.value;
+}
+
 async function handleSave(data: Omit<DeskEvent, 'id' | 'created_at' | 'updated_at'>) {
   await createEvent(data);
   closeForm();
-  eventListRef.value?.refresh();
+  calendarMode.value ? calendarViewRef.value?.refresh() : eventListRef.value?.refresh();
 }
 
 async function handleUpdate(id: string, data: Partial<DeskEvent>) {
   await updateEvent(id, data);
   closeForm();
-  eventListRef.value?.refresh();
+  calendarMode.value ? calendarViewRef.value?.refresh() : eventListRef.value?.refresh();
 }
 </script>
 
 <template>
-  <TitleBar @settings="settingsVisible = true" />
-  <EventList
-    ref="eventListRef"
-    @create="openCreate"
-    @edit="openEdit"
-  />
+  <TitleBar :is-calendar="calendarMode" @settings="settingsVisible = true" @toggle-calendar="toggleCalendar" />
+  <EventList v-if="!calendarMode" ref="eventListRef" @create="openCreate" @edit="openEdit" />
+  <CalendarView v-else ref="calendarViewRef" @create="openCreate" @edit="openEdit" />
   <EventForm
     :visible="formVisible"
     :edit-event="editEvent"

@@ -4,6 +4,13 @@ export const zhCN = {
   minimizeToTray: '最小化到托盘',
   closeToTray: '关闭到托盘',
 
+  // CalendarView
+  switchToCalendar: '切换到日历',
+  switchToList: '切换到列表',
+  calendarWeekdays: ['日', '一', '二', '三', '四', '五', '六'] as string[],
+  calendarNoEvents: '当天无未完成事项',
+  calendarSelectHint: '点击日期查看事项',
+
   // EventList
   tabToday: '今天',
   tabIncomplete: '未完成',

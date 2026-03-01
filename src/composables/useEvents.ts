@@ -130,6 +130,17 @@ export function useEvents() {
     }
   }
 
+  async function fetchMonthEvents(year: number, month: number): Promise<DeskEvent[]> {
+    const db = await getDb();
+    const monthStart = new Date(year, month, 1, 0, 0, 0, 0);
+    const monthEnd = new Date(year, month + 1, 0, 23, 59, 59, 999);
+    const rows = await db.select<DeskEvent[]>(
+      'SELECT * FROM events WHERE event_time >= $1 AND event_time <= $2 AND completed = 0 ORDER BY event_time ASC',
+      [monthStart.toISOString(), monthEnd.toISOString()]
+    );
+    return rows;
+  }
+
   async function generateReminders(db: any, eventId: string, eventTime: string, remindAt: string | null, remindOnTime: number) {
     if (remindOnTime) {
       await db.execute(
@@ -156,5 +167,5 @@ export function useEvents() {
     return date.toISOString();
   }
 
-  return { events, loading, fetchEvents, createEvent, updateEvent, deleteEvent, toggleComplete };
+  return { events, loading, fetchEvents, fetchMonthEvents, createEvent, updateEvent, deleteEvent, toggleComplete };
 }
