@@ -4,6 +4,13 @@ export const en = {
   minimizeToTray: 'Minimize to tray',
   closeToTray: 'Close to tray',
 
+  // CalendarView
+  switchToCalendar: 'Switch to Calendar',
+  switchToList: 'Switch to List',
+  calendarWeekdays: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as string[],
+  calendarNoEvents: 'No pending events',
+  calendarSelectHint: 'Tap a date to view events',
+
   // EventList
   tabToday: 'Today',
   tabIncomplete: 'Incomplete',
