@@ -42,6 +42,13 @@ npm run tauri build
 
 - Added language switching (Chinese / English) in the settings panel
 - All UI text now responds to language changes instantly, with preference persisted across restarts
+- **Security:** Added Content Security Policy (CSP) to the Tauri WebView
+- **Security:** Fixed high-severity CVEs in `minimatch` (ReDoS ×3) and `rollup` (path traversal) via dependency upgrades
+- **Security:** Accent color value is now validated before being applied as a CSS property
+- **Security:** Removed unused `opener` capability from the permission manifest
+- **Security:** Added `maxlength` constraints (200 / 1000 chars) on title and description inputs
+- **Security:** `recurrence` field is now validated against an allowlist before being written to the database
+- **Stability:** Replaced `unwrap()` with proper error propagation in the Tauri setup path
 
 ### v1.2.1
 
