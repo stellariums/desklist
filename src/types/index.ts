@@ -8,6 +8,7 @@ export interface DeskEvent {
   remind_on_time: number;
   recurrence: string;
   recurrence_end: string | null;
+  generated_next_id?: string | null;
   created_at: string;
   updated_at: string;
 }
