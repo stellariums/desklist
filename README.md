@@ -39,6 +39,14 @@ npm run tauri build
 
 ## Changelog
 
+### v1.4.1
+
+- Fixed duplicate next-occurrence generation when repeatedly toggling recurring tasks between complete/incomplete
+- Fixed monthly recurrence rollover for end-of-month dates (for example, Jan 31 now rolls to Feb 28 instead of skipping to March)
+- Fixed reminder queue behavior when toggling completion: unfired reminders are cleaned up on complete, and only future reminders are regenerated when reopening
+- Fixed window layering to match product behavior (`alwaysOnTop`)
+- Fixed calendar "today" highlight so it auto-refreshes after midnight without requiring app restart
+
 ### v1.4.0
 
 - Added calendar view: switch between list and calendar via the title bar button
