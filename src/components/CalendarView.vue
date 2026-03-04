@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import type { DeskEvent } from '../types';
 import { useEvents } from '../composables/useEvents';
 import { useLocale } from '../composables/useLocale';
@@ -13,11 +13,12 @@ const emit = defineEmits<{
   edit: [event: DeskEvent];
 }>();
 
-const today = new Date();
-const viewYear = ref(today.getFullYear());
-const viewMonth = ref(today.getMonth()); // 0-indexed
+const today = ref(new Date());
+const viewYear = ref(today.value.getFullYear());
+const viewMonth = ref(today.value.getMonth()); // 0-indexed
 const monthEvents = ref<DeskEvent[]>([]);
 const selectedDate = ref<number | null>(null);
+let todayTickTimer: ReturnType<typeof setTimeout> | null = null;
 
 const monthLabel = computed(() => {
   if (locale.locale === 'en') {
@@ -63,7 +64,24 @@ const selectedDayEvents = computed<DeskEvent[]>(() => {
 
 function isToday(day: number | null): boolean {
   if (day === null) return false;
-  return day === today.getDate() && viewMonth.value === today.getMonth() && viewYear.value === today.getFullYear();
+  return day === today.value.getDate()
+    && viewMonth.value === today.value.getMonth()
+    && viewYear.value === today.value.getFullYear();
+}
+
+function scheduleTodayTick() {
+  if (todayTickTimer) clearTimeout(todayTickTimer);
+
+  const now = new Date();
+  const nextMidnight = new Date(now);
+  // Add a tiny buffer to avoid borderline timing issues exactly at midnight.
+  nextMidnight.setHours(24, 0, 1, 0);
+  const waitMs = Math.max(1000, nextMidnight.getTime() - now.getTime());
+
+  todayTickTimer = setTimeout(() => {
+    today.value = new Date();
+    scheduleTodayTick();
+  }, waitMs);
 }
 
 function prevMonth() {
@@ -106,7 +124,15 @@ async function handleDelete(id: string) {
 }
 
 watch([viewYear, viewMonth], loadMonthData);
-onMounted(loadMonthData);
+onMounted(() => {
+  loadMonthData();
+  scheduleTodayTick();
+});
+onUnmounted(() => {
+  if (!todayTickTimer) return;
+  clearTimeout(todayTickTimer);
+  todayTickTimer = null;
+});
 defineExpose({ refresh: loadMonthData });
 </script>
 

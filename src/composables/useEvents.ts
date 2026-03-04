@@ -17,6 +17,16 @@ export function useEvents() {
   const events = ref<DeskEvent[]>([]);
   const loading = ref(false);
 
+  function shouldQueueReminder(fireAt: string, onlyFutureAfter?: string) {
+    if (!onlyFutureAfter) return true;
+
+    const fireAtMs = Date.parse(fireAt);
+    const thresholdMs = Date.parse(onlyFutureAfter);
+    if (Number.isNaN(fireAtMs) || Number.isNaN(thresholdMs)) return true;
+
+    return fireAtMs > thresholdMs;
+  }
+
   async function fetchEvents(filter: FilterTab = 'all') {
     loading.value = true;
     try {
@@ -59,9 +69,9 @@ export function useEvents() {
     const now = new Date().toISOString();
 
     await db.execute(
-      `INSERT INTO events (id, title, description, event_time, completed, remind_at, remind_on_time, recurrence, recurrence_end, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-      [id, event.title, event.description || '', event.event_time, 0, event.remind_at, event.remind_on_time ?? 1, toSafeRecurrence(event.recurrence), event.recurrence_end, now, now]
+      `INSERT INTO events (id, title, description, event_time, completed, remind_at, remind_on_time, recurrence, recurrence_end, generated_next_id, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+      [id, event.title, event.description || '', event.event_time, 0, event.remind_at, event.remind_on_time ?? 1, toSafeRecurrence(event.recurrence), event.recurrence_end, null, now, now]
     );
 
     await generateReminders(db, id, event.event_time, event.remind_at, event.remind_on_time ?? 1);
@@ -115,18 +125,37 @@ export function useEvents() {
     const event = rows[0];
     const newCompleted = event.completed ? 0 : 1;
     await db.execute('UPDATE events SET completed = $1, updated_at = $2 WHERE id = $3', [newCompleted, now, id]);
+    await db.execute('DELETE FROM reminder_queue WHERE event_id = $1 AND fired = 0', [id]);
 
-    if (newCompleted === 1 && event.recurrence !== 'none') {
-      const nextTime = calculateNextOccurrence(event.event_time, event.recurrence);
-      if (nextTime && (!event.recurrence_end || nextTime <= event.recurrence_end)) {
-        const newId = crypto.randomUUID();
-        await db.execute(
-          `INSERT INTO events (id, title, description, event_time, completed, remind_at, remind_on_time, recurrence, recurrence_end, created_at, updated_at)
-           VALUES ($1, $2, $3, $4, 0, $5, $6, $7, $8, $9, $10)`,
-          [newId, event.title, event.description, nextTime, event.remind_at, event.remind_on_time, event.recurrence, event.recurrence_end, now, now]
-        );
-        await generateReminders(db, newId, nextTime, event.remind_at, event.remind_on_time);
-      }
+    if (newCompleted === 0) {
+      await generateReminders(db, id, event.event_time, event.remind_at, event.remind_on_time, { onlyFutureAfter: now });
+      return;
+    }
+
+    if (event.recurrence === 'none') return;
+
+    // Idempotency: if this recurrence already generated a next instance and it still exists, do not generate again.
+    if (event.generated_next_id) {
+      const existingNext = await db.select<{ id: string }[]>(
+        'SELECT id FROM events WHERE id = $1 LIMIT 1',
+        [event.generated_next_id]
+      );
+      if (existingNext.length > 0) return;
+    }
+
+    const nextTime = calculateNextOccurrence(event.event_time, event.recurrence);
+    if (nextTime && (!event.recurrence_end || nextTime <= event.recurrence_end)) {
+      const newId = crypto.randomUUID();
+      await db.execute(
+        `INSERT INTO events (id, title, description, event_time, completed, remind_at, remind_on_time, recurrence, recurrence_end, generated_next_id, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, 0, $5, $6, $7, $8, $9, $10, $11)`,
+        [newId, event.title, event.description, nextTime, event.remind_at, event.remind_on_time, event.recurrence, event.recurrence_end, null, now, now]
+      );
+      await generateReminders(db, newId, nextTime, event.remind_at, event.remind_on_time);
+      await db.execute(
+        'UPDATE events SET generated_next_id = $1, updated_at = $2 WHERE id = $3',
+        [newId, now, id]
+      );
     }
   }
 
@@ -141,14 +170,21 @@ export function useEvents() {
     return rows;
   }
 
-  async function generateReminders(db: any, eventId: string, eventTime: string, remindAt: string | null, remindOnTime: number) {
-    if (remindOnTime) {
+  async function generateReminders(
+    db: any,
+    eventId: string,
+    eventTime: string,
+    remindAt: string | null,
+    remindOnTime: number,
+    options?: { onlyFutureAfter?: string }
+  ) {
+    if (remindOnTime && shouldQueueReminder(eventTime, options?.onlyFutureAfter)) {
       await db.execute(
         'INSERT INTO reminder_queue (event_id, fire_at, fired, type) VALUES ($1, $2, 0, $3)',
         [eventId, eventTime, 'on_time']
       );
     }
-    if (remindAt) {
+    if (remindAt && shouldQueueReminder(remindAt, options?.onlyFutureAfter)) {
       await db.execute(
         'INSERT INTO reminder_queue (event_id, fire_at, fired, type) VALUES ($1, $2, 0, $3)',
         [eventId, remindAt, 'advance']
@@ -158,10 +194,27 @@ export function useEvents() {
 
   function calculateNextOccurrence(eventTime: string, recurrence: string): string | null {
     const date = new Date(eventTime);
+    if (Number.isNaN(date.getTime())) return null;
+
     switch (recurrence) {
-      case 'daily': date.setDate(date.getDate() + 1); break;
-      case 'weekly': date.setDate(date.getDate() + 7); break;
-      case 'monthly': date.setMonth(date.getMonth() + 1); break;
+      case 'daily':
+        date.setUTCDate(date.getUTCDate() + 1);
+        break;
+      case 'weekly':
+        date.setUTCDate(date.getUTCDate() + 7);
+        break;
+      case 'monthly': {
+        const sourceDay = date.getUTCDate();
+        const sourceMonth = date.getUTCMonth();
+        const sourceYear = date.getUTCFullYear();
+        const targetMonthIndex = sourceMonth + 1;
+        const targetYear = sourceYear + Math.floor(targetMonthIndex / 12);
+        const targetMonth = targetMonthIndex % 12;
+        const daysInTargetMonth = new Date(Date.UTC(targetYear, targetMonth + 1, 0)).getUTCDate();
+
+        date.setUTCFullYear(targetYear, targetMonth, Math.min(sourceDay, daysInTargetMonth));
+        break;
+      }
       default: return null;
     }
     return date.toISOString();
