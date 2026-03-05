@@ -28,6 +28,12 @@ pub fn run() {
 
             let window = app.get_webview_window("main")
                 .ok_or("Main window 'main' not found")?;
+
+            #[cfg(target_os = "windows")]
+            {
+                let _ = window.set_always_on_top(false);
+                let _ = window.set_always_on_bottom(true);
+            }
             let window_clone = window.clone();
             window.on_window_event(move |event| {
                 if let tauri::WindowEvent::CloseRequested { api, .. } = event {

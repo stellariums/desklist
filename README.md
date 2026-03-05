@@ -39,6 +39,10 @@ npm run tauri build
 
 ## Changelog
 
+### v1.5.1
+
+- Fixed window z-order behavior: Desklist now stays at the desktop bottom layer and can be covered by normal app windows (browsers, editors, etc.)
+
 ### v1.5.0
 
 - Fixed duplicate next-occurrence generation when repeatedly toggling recurring tasks between complete/incomplete

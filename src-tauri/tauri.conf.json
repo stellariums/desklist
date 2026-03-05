@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Desklist",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "identifier": "com.lin.desklist",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -15,7 +15,7 @@
         "title": "Desklist",
         "width": 360,
         "height": 520,
-        "alwaysOnTop": true,
+        "alwaysOnTop": false,
         "decorations": false,
         "transparent": true,
         "resizable": true,
