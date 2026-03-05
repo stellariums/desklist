@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import type { DeskEvent } from '../types';
 import { useEvents } from '../composables/useEvents';
@@ -9,7 +9,7 @@ const { fetchMonthEvents, toggleComplete, deleteEvent } = useEvents();
 const { t, locale } = useLocale();
 
 const emit = defineEmits<{
-  create: [];
+  create: [defaultTime: string | null];
   edit: [event: DeskEvent];
 }>();
 
@@ -21,11 +21,10 @@ const selectedDate = ref<number | null>(null);
 let todayTickTimer: ReturnType<typeof setTimeout> | null = null;
 
 const monthLabel = computed(() => {
-  if (locale.locale === 'en') {
-    const d = new Date(viewYear.value, viewMonth.value, 1);
-    return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-  }
-  return `${viewYear.value}年${viewMonth.value + 1}月`;
+  const date = new Date(viewYear.value, viewMonth.value, 1);
+  return locale.locale === 'en'
+    ? date.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+    : date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' });
 });
 
 const calendarCells = computed<(number | null)[]>(() => {
@@ -84,6 +83,24 @@ function scheduleTodayTick() {
   }, waitMs);
 }
 
+function getCreateDefaultTime(): string {
+  const defaultTime = new Date();
+  defaultTime.setMinutes(defaultTime.getMinutes() + 30);
+  defaultTime.setSeconds(0, 0);
+
+  if (selectedDate.value !== null) {
+    defaultTime.setFullYear(viewYear.value, viewMonth.value, selectedDate.value);
+  }
+
+  return defaultTime.toISOString();
+}
+
+function formatSelectedDateLabel(day: number): string {
+  const date = new Date(viewYear.value, viewMonth.value, day);
+  return locale.locale === 'en'
+    ? date.toLocaleString('en-US', { month: 'long', day: 'numeric' })
+    : date.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
+}
 function prevMonth() {
   if (viewMonth.value === 0) {
     viewMonth.value = 11;
@@ -140,13 +157,13 @@ defineExpose({ refresh: loadMonthData });
   <div class="calendar-view">
     <!-- Month navigation header -->
     <div class="cal-header">
-      <button class="nav-btn" @click="prevMonth" aria-label="上月">
+      <button class="nav-btn" @click="prevMonth" aria-label="涓婃湀">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
       <span class="month-label">{{ monthLabel }}</span>
-      <button class="nav-btn" @click="nextMonth" aria-label="下月">
+      <button class="nav-btn" @click="nextMonth" aria-label="涓嬫湀">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"/>
         </svg>
@@ -181,14 +198,9 @@ defineExpose({ refresh: loadMonthData });
     <div class="day-events-section">
       <template v-if="selectedDate !== null">
         <div class="day-events-header">
-          <template v-if="locale.locale === 'en'">
-            {{ new Date(viewYear, viewMonth, selectedDate).toLocaleString('en-US', { month: 'long', day: 'numeric' }) }}
-          </template>
-          <template v-else>
-            {{ viewMonth + 1 }}月{{ selectedDate }}日
-          </template>
+          {{ formatSelectedDateLabel(selectedDate) }}
         </div>
-        <div v-if="selectedDayEvents.length === 0" class="empty-state">
+<div v-if="selectedDayEvents.length === 0" class="empty-state">
           {{ t.calendarNoEvents }}
         </div>
         <div v-else class="card-list">
@@ -208,7 +220,7 @@ defineExpose({ refresh: loadMonthData });
     </div>
 
     <!-- FAB -->
-    <button class="fab" @click="emit('create')" :aria-label="t.newEvent">
+    <button class="fab" @click="emit('create', getCreateDefaultTime())" :aria-label="t.newEvent">
       <svg width="20" height="20" viewBox="0 0 20 20">
         <line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
@@ -388,3 +400,4 @@ defineExpose({ refresh: loadMonthData });
   transform: scale(0.98);
 }
 </style>
+

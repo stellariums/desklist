@@ -19,23 +19,27 @@ useLocale().init();
 const formVisible = ref(false);
 const settingsVisible = ref(false);
 const editEvent = ref<DeskEvent | null>(null);
+const createDefaultTime = ref<string | null>(null);
 const eventListRef = ref<InstanceType<typeof EventList> | null>(null);
 const calendarMode = ref(false);
 const calendarViewRef = ref<InstanceType<typeof CalendarView> | null>(null);
 
-function openCreate() {
+function openCreate(defaultTime: string | null = null) {
   editEvent.value = null;
+  createDefaultTime.value = defaultTime;
   formVisible.value = true;
 }
 
 function openEdit(event: DeskEvent) {
   editEvent.value = event;
+  createDefaultTime.value = null;
   formVisible.value = true;
 }
 
 function closeForm() {
   formVisible.value = false;
   editEvent.value = null;
+  createDefaultTime.value = null;
 }
 
 function toggleCalendar() {
@@ -62,6 +66,7 @@ async function handleUpdate(id: string, data: Partial<DeskEvent>) {
   <EventForm
     :visible="formVisible"
     :edit-event="editEvent"
+    :default-time="createDefaultTime"
     @close="closeForm"
     @save="handleSave"
     @update="handleUpdate"

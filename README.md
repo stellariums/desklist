@@ -1,6 +1,6 @@
 # Desklist
 
-[中文](README.zh-CN.md) | English
+[涓枃](README.zh-CN.md) | English
 
 A lightweight Windows desktop todo/reminder app. It features a borderless always-on-top window, minimizes to the system tray, and supports scheduled reminders and recurring events.
 
@@ -39,13 +39,14 @@ npm run tauri build
 
 ## Changelog
 
-### v1.4.1
+### v1.5.0
 
 - Fixed duplicate next-occurrence generation when repeatedly toggling recurring tasks between complete/incomplete
 - Fixed monthly recurrence rollover for end-of-month dates (for example, Jan 31 now rolls to Feb 28 instead of skipping to March)
 - Fixed reminder queue behavior when toggling completion: unfired reminders are cleaned up on complete, and only future reminders are regenerated when reopening
 - Fixed window layering to match product behavior (`alwaysOnTop`)
-- Fixed calendar "today" highlight so it auto-refreshes after midnight without requiring app restart
+- Fixed create-from-calendar default time: after selecting a date in calendar view, new events now default to that selected date instead of today
+- Fixed Chinese month/date rendering in calendar view to prevent malformed template text (for example 2026�?{...})
 
 ### v1.4.0
 
@@ -60,7 +61,7 @@ npm run tauri build
 - Added language switching (Chinese / English) in the settings panel
 - All UI text now responds to language changes instantly, with preference persisted across restarts
 - **Security:** Added Content Security Policy (CSP) to the Tauri WebView
-- **Security:** Fixed high-severity CVEs in `minimatch` (ReDoS ×3) and `rollup` (path traversal) via dependency upgrades
+- **Security:** Fixed high-severity CVEs in `minimatch` (ReDoS 脳3) and `rollup` (path traversal) via dependency upgrades
 - **Security:** Accent color value is now validated before being applied as a CSS property
 - **Security:** Removed unused `opener` capability from the permission manifest
 - **Security:** Added `maxlength` constraints (200 / 1000 chars) on title and description inputs
@@ -101,3 +102,4 @@ npm run tauri build
 ## License
 
 [MIT](LICENSE)
+

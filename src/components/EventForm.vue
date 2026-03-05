@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 import type { DeskEvent } from '../types';
 import ReminderConfig from './ReminderConfig.vue';
@@ -8,6 +8,7 @@ import { useLocale } from '../composables/useLocale';
 const props = defineProps<{
   visible: boolean;
   editEvent: DeskEvent | null;
+  defaultTime?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -44,14 +45,25 @@ watch(() => props.visible, (val) => {
 function resetForm() {
   title.value = '';
   description.value = '';
-  const now = new Date();
-  now.setMinutes(now.getMinutes() + 30);
-  now.setSeconds(0, 0);
-  eventTime.value = toLocalDatetime(now.toISOString());
+  eventTime.value = toLocalDatetime(getDefaultEventTimeIso());
   remindOnTime.value = appSettings.defaultRemindOnTime;
   advanceMinutes.value = 0;
   recurrence.value = 'none';
   recurrenceEnd.value = '';
+}
+
+function getDefaultEventTimeIso(): string {
+  if (props.defaultTime) {
+    const selected = new Date(props.defaultTime);
+    if (!Number.isNaN(selected.getTime())) {
+      return selected.toISOString();
+    }
+  }
+
+  const now = new Date();
+  now.setMinutes(now.getMinutes() + 30);
+  now.setSeconds(0, 0);
+  return now.toISOString();
 }
 
 function toLocalDatetime(iso: string): string {

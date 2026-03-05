@@ -1,53 +1,47 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-Desklist is a Tauri desktop app with a Vue frontend.
-
-- `src/`: Vue 3 + TypeScript UI (`components/`, `composables/`, `types/`, `styles/`).
-- `src-tauri/src/`: Rust backend modules (`lib.rs`, `tray.rs`, `scheduler.rs`, `db.rs`).
-- `src-tauri/migrations/`: SQLite schema migration files (for example `001_init.sql`).
-- `public/`: static frontend assets.
-- `.github/workflows/`: CI automation and review workflows.
-
-Keep frontend data logic in `src/composables/useEvents.ts`; keep OS/system integration in Rust.
+- `src/`: Vue 3 + TypeScript frontend.
+- `src/components/`: UI components (for example `EventList.vue`, `CalendarView.vue`).
+- `src/composables/`: state and data logic (`useEvents.ts`, theme/locale/settings hooks).
+- `src/i18n/`: locale dictionaries (`en.ts`, `zh-CN.ts`).
+- `src/styles/`: global styles.
+- `src-tauri/`: Rust desktop host for Tauri.
+- `src-tauri/src/`: backend modules (`lib.rs`, `scheduler.rs`, `tray.rs`, `db.rs`).
+- `src-tauri/migrations/`: SQLite schema migrations.
+- `public/`: static assets; `dist/` is build output (do not edit manually).
 
 ## Build, Test, and Development Commands
-- `npm install`: install Node dependencies.
-- `npm run tauri dev`: run full desktop app in development (Vite + Tauri).
-- `npm run build`: frontend type-check and production build (`vue-tsc --noEmit && vite build`).
-- `npm run tauri build`: build installable desktop bundle (NSIS target).
-- `cargo check` (run in `src-tauri/`): compile-check Rust backend quickly.
-- `npx vue-tsc --noEmit`: standalone frontend type check.
+- `npm install`: install frontend/tooling dependencies.
+- `npm run dev`: start Vite frontend only.
+- `npm run build`: run `vue-tsc` and production frontend build.
+- `npm run tauri dev`: run full desktop app in development.
+- `npm run tauri build`: build distributable desktop app.
+- `cd src-tauri && cargo check`: validate Rust code compiles.
 
 ## Coding Style & Naming Conventions
-- TypeScript uses strict mode (`tsconfig.json`); fix all type errors before PR.
-- Use 2-space indentation in Vue/TS/CSS; keep existing formatting style.
-- Vue SFCs and components: PascalCase file names (for example `EventList.vue`).
-- Composables: `useXxx.ts` (for example `useTheme.ts`).
-- Rust modules/functions follow idiomatic `snake_case`; types use `CamelCase`.
-
-No dedicated lint config is committed yet; rely on TypeScript checks and consistent existing style.
+- Use 2-space indentation in TypeScript/Vue and keep `<script setup lang="ts">` style.
+- Use `PascalCase` for component files, `camelCase` for functions/composables, and `snake_case` for DB fields.
+- In Rust, keep module/function names idiomatic (`snake_case`) and prefer explicit error propagation over panics.
+- No strict formatter config is enforced; follow existing file style and keep diffs minimal.
 
 ## Testing Guidelines
-There is currently no formal unit/integration test suite in this repository.
-
-Minimum validation for contributions:
-- Run `npm run build`.
-- Run `cargo check` in `src-tauri/`.
-- Manually verify key flows in `npm run tauri dev` (event CRUD, reminder behavior, tray interactions).
-
-If adding tests, place frontend tests under `src/**/__tests__/` and Rust tests near modules (`mod tests`).
+- There is no dedicated automated test suite yet.
+- Minimum validation for code changes:
+  - `npm run build`
+  - `cd src-tauri && cargo check`
+- For behavior changes, run manual smoke checks in `npm run tauri dev` (event create/edit, recurring completion, reminder behavior, calendar rendering).
 
 ## Commit & Pull Request Guidelines
-Follow the existing commit pattern: Conventional Commits with concise scopes, e.g.:
-- `feat: add reminder snooze option`
-- `fix: resolve tray menu visibility issue`
-- `docs: update README changelog`
+- Follow commit style seen in history: `fix: ...`, `docs: ...`, `chore(release): ...`.
+- Use concise, imperative commit messages and scope when helpful.
+- PRs should include:
+  - change summary and motivation,
+  - verification steps run locally,
+  - screenshots/GIFs for UI changes,
+  - migration notes when `src-tauri/migrations/` is touched.
 
-PRs should include:
-- Clear summary of user-visible and technical changes.
-- Linked issue (if applicable).
-- Verification notes with commands run.
-- UI screenshots/GIFs for visual changes (Vue components, theme, window behavior).
-
-Keep PRs focused; avoid unrelated refactors.
+## Security & Configuration Notes
+- Keep Tauri capability and CSP changes minimal and justified.
+- Never commit secrets, tokens, or local environment-specific files.
+- Add new numbered migration files; do not rewrite already released migrations.
