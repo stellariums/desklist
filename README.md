@@ -4,6 +4,10 @@
 
 A lightweight Windows desktop todo/reminder app. It features a borderless always-on-top window, minimizes to the system tray, and supports scheduled reminders and recurring events.
 
+Desklist is built for people who want a reminder tool that feels fast, visible, and native on Windows. You can open it in seconds, capture tasks quickly, keep it quietly in the tray, and rely on timed or recurring reminders without switching to a heavy project-management app.
+
+Compared with bloated todo apps, Desklist focuses on the desktop experience: a clean frosted-glass UI, quick list and calendar views, local SQLite storage, and lightweight daily planning that stays close to your workflow.
+
 ## Features
 
 - Create, edit, and delete events with title, description, and time
