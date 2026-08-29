@@ -2,7 +2,7 @@
 
 [中文](README.zh-CN.md) | English
 
-A lightweight Windows desktop todo/reminder app. It features a borderless always-on-top window, minimizes to the system tray, and supports scheduled reminders and recurring events.
+A lightweight Windows desktop todo/reminder app. It features a borderless desktop-bottom window, minimizes to the system tray, and supports scheduled reminders and recurring events.
 
 Desklist is built for people who want a reminder tool that feels fast, visible, and native on Windows. You can open it in seconds, capture tasks quickly, keep it quietly in the tray, and rely on timed or recurring reminders without switching to a heavy project-management app.
 
@@ -19,12 +19,20 @@ Compared with bloated todo apps, Desklist focuses on the desktop experience: a c
 - Runs in the system tray and can hide to tray when the window is closed
 - Single-instance application
 - Dark frosted-glass UI (Windows Acrylic)
+- Choose the task data folder on first launch instead of being forced to use the system drive
+- View and open the active data folder from Settings
+
+## Data Storage
+
+On first launch, Desklist asks where to store task data. If an older database is found, the app copies it to the selected folder, verifies the copy, and only then enables the new location. The original database is not deleted automatically.
+
+App upgrades or reinstalls do not overwrite the selected data folder. Do not manually move or edit `desklist.db`, `desklist.db-wal`, or `desklist.db-shm` while Desklist is running.
 
 ## Tech Stack
 
 - Frontend: Vue 3 + TypeScript + Vite
 - Desktop framework: Tauri 2
-- Data storage: SQLite (`tauri-plugin-sql`)
+- Data storage: SQLite (managed centrally in Rust with `sqlx`)
 - Reminder scheduling: Rust + Tokio
 - Notifications: `tauri-plugin-notification`
 
@@ -41,7 +49,18 @@ npm run tauri dev
 npm run tauri build
 ```
 
+## Roadmap
+
+The next phase turns Desklist into a browser-based personal workbench, followed by local Agent interfaces. See the [personal workbench roadmap](docs/ROADMAP.zh-CN.md) for completed work, implementation order, and deferred scope.
+
 ## Changelog
+
+### Unreleased
+
+- Added first-launch data-folder selection and safe migration of an existing database
+- Added the active data location to Settings with a shortcut to open the folder
+- Centralized task CRUD, recurrence, and reminder behavior in the Rust backend
+- Added temporary-database tests so verification never changes real user tasks
 
 ### v1.5.1
 

@@ -13,6 +13,18 @@ export interface DeskEvent {
   updated_at: string;
 }
 
+export type EventInput = Pick<
+  DeskEvent,
+  'title' | 'description' | 'event_time' | 'remind_at' | 'remind_on_time' | 'recurrence' | 'recurrence_end'
+>;
+
+export interface DataStatus {
+  configured: boolean;
+  dataDir: string | null;
+  legacyDatabaseFound: boolean;
+  error: string | null;
+}
+
 export interface ReminderRecord {
   id: number;
   event_id: string;

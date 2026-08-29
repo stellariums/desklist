@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { DeskEvent } from '../types';
+import type { DeskEvent, EventInput } from '../types';
 import ReminderConfig from './ReminderConfig.vue';
 import { useAppSettings } from '../composables/useAppSettings';
 import { useLocale } from '../composables/useLocale';
@@ -13,8 +13,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   close: [];
-  save: [data: Omit<DeskEvent, 'id' | 'created_at' | 'updated_at'>];
-  update: [id: string, data: Partial<DeskEvent>];
+  save: [data: EventInput];
+  update: [id: string, data: EventInput];
 }>();
 
 const title = ref('');
@@ -110,7 +110,6 @@ function handleSave() {
       title: title.value.trim(),
       description: description.value.trim(),
       event_time: eventTimeISO,
-      completed: 0,
       remind_on_time: remindOnTime.value,
       remind_at: remindAt,
       recurrence: recurrence.value,

@@ -1,4 +1,13 @@
 export const zhCN = {
+  // Data location
+  dataSetupTitle: '选择任务保存位置',
+  dataSetupMigrationHint: '发现了你原来的任务。选择一个空间充足的文件夹，Desklist 会安全复制过去。',
+  dataSetupNewHint: '选择一个文件夹，用来保存你的任务和提醒。',
+  chooseDataFolder: '选择文件夹',
+  confirmDataFolder: '确认并继续',
+  migratingData: '正在安全迁移...',
+  dataSetupSafetyNote: '确认迁移成功前，原来的数据不会被删除。',
+
   // TitleBar
   settings: '设置',
   minimizeToTray: '最小化到托盘',
@@ -54,7 +63,8 @@ export const zhCN = {
   day1Before: '1天前',
 
   // SettingsPanel
-  appearanceSettings: '外观设置',
+  settingsTitle: '设置',
+  dataLocation: '任务保存位置（点击打开）',
   windowOpacity: '窗口透明度',
   themeColor: '主题色',
   defaultReminderLabel: '新建事件默认提醒',

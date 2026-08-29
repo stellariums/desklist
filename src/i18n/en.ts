@@ -1,4 +1,13 @@
 export const en = {
+  // Data location
+  dataSetupTitle: 'Choose where to save your tasks',
+  dataSetupMigrationHint: 'Your existing tasks were found. Choose a folder with enough space and Desklist will copy them safely.',
+  dataSetupNewHint: 'Choose a folder for your tasks and reminders.',
+  chooseDataFolder: 'Choose folder',
+  confirmDataFolder: 'Confirm and continue',
+  migratingData: 'Moving data safely...',
+  dataSetupSafetyNote: 'Your original data stays untouched until the move is verified.',
+
   // TitleBar
   settings: 'Settings',
   minimizeToTray: 'Minimize to tray',
@@ -54,7 +63,8 @@ export const en = {
   day1Before: '1 day before',
 
   // SettingsPanel
-  appearanceSettings: 'Appearance',
+  settingsTitle: 'Settings',
+  dataLocation: 'Task data location (click to open)',
   windowOpacity: 'Window Opacity',
   themeColor: 'Theme Color',
   defaultReminderLabel: 'Default Reminder',

@@ -1,9 +1,10 @@
+use chrono::{Local, TimeZone, Utc};
 use std::time::Duration;
-use chrono::{TimeZone, Utc, Local};
 use tauri::AppHandle;
 use tauri::Manager;
 use tauri_plugin_notification::NotificationExt;
-use tauri_plugin_sql::{DbInstances, DbPool};
+
+use crate::db::DatabaseState;
 
 pub fn start_reminder_scheduler(app: AppHandle) {
     tauri::async_runtime::spawn(async move {
@@ -34,23 +35,16 @@ struct ReminderRow {
 }
 
 async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
-    let db_instances = match app.try_state::<DbInstances>() {
-        Some(instances) => instances,
+    let state = match app.try_state::<DatabaseState>() {
+        Some(state) => state,
         None => return Ok(()),
     };
 
-    let now = chrono::Utc::now()
-        .format("%Y-%m-%dT%H:%M:%S")
-        .to_string();
+    let now = chrono::Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string();
 
-    let instances = db_instances.0.read().await;
-    let db_pool = match instances.get("sqlite:desklist.db") {
-        Some(pool) => pool,
-        None => return Ok(()),
-    };
-
-    let pool = match db_pool {
-        DbPool::Sqlite(pool) => pool,
+    let pool = match state.pool().await {
+        Ok(pool) => pool,
+        Err(_) => return Ok(()),
     };
 
     let reminders = sqlx::query_as::<_, ReminderRow>(
@@ -60,7 +54,7 @@ async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
          WHERE rq.fired = 0 AND rq.fire_at <= ? AND e.completed = 0",
     )
     .bind(&now)
-    .fetch_all(pool)
+    .fetch_all(&pool)
     .await?;
 
     for reminder in &reminders {
@@ -85,7 +79,7 @@ async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
 
         sqlx::query("UPDATE reminder_queue SET fired = 1 WHERE id = ?")
             .bind(reminder.id)
-            .execute(pool)
+            .execute(&pool)
             .await?;
     }
 

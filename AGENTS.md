@@ -7,7 +7,7 @@
 - `src/i18n/`: locale dictionaries (`en.ts`, `zh-CN.ts`).
 - `src/styles/`: global styles.
 - `src-tauri/`: Rust desktop host for Tauri.
-- `src-tauri/src/`: backend modules (`lib.rs`, `scheduler.rs`, `tray.rs`, `db.rs`).
+- `src-tauri/src/`: backend modules (`lib.rs`, `db.rs`, `events.rs`, `scheduler.rs`, `tray.rs`).
 - `src-tauri/migrations/`: SQLite schema migrations.
 - `public/`: static assets; `dist/` is build output (do not edit manually).
 
@@ -18,6 +18,7 @@
 - `npm run tauri dev`: run full desktop app in development.
 - `npm run tauri build`: build distributable desktop app.
 - `cd src-tauri && cargo check`: validate Rust code compiles.
+- `cd src-tauri && cargo test`: run Rust business-logic tests against temporary data.
 
 ## Coding Style & Naming Conventions
 - Use 2-space indentation in TypeScript/Vue and keep `<script setup lang="ts">` style.
@@ -26,11 +27,13 @@
 - No strict formatter config is enforced; follow existing file style and keep diffs minimal.
 
 ## Testing Guidelines
-- There is no dedicated automated test suite yet.
+- Rust tests cover recurrence and the event lifecycle using an in-memory database.
 - Minimum validation for code changes:
   - `npm run build`
+  - `cd src-tauri && cargo test`
   - `cd src-tauri && cargo check`
-- For behavior changes, run manual smoke checks in `npm run tauri dev` (event create/edit, recurring completion, reminder behavior, calendar rendering).
+- For behavior changes, run manual smoke checks in `npm run tauri dev` (data-folder selection, event create/edit, recurring completion, reminder behavior, calendar rendering).
+- Never run destructive tests against the user's selected `desklist.db`.
 
 ## Commit & Pull Request Guidelines
 - Follow commit style seen in history: `fix: ...`, `docs: ...`, `chore(release): ...`.
@@ -45,3 +48,4 @@
 - Keep Tauri capability and CSP changes minimal and justified.
 - Never commit secrets, tokens, or local environment-specific files.
 - Add new numbered migration files; do not rewrite already released migrations.
+- Never commit SQLite databases, `data-location.json`, or machine-specific data paths.

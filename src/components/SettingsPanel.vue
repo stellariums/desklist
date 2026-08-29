@@ -1,18 +1,43 @@
 ﻿<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { invoke } from '@tauri-apps/api/core';
 import { useTheme } from '../composables/useTheme';
 import { useAppSettings } from '../composables/useAppSettings';
 import { useLocale } from '../composables/useLocale';
+import type { DataStatus } from '../types';
 
-defineProps<{ visible: boolean }>();
+const props = defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ close: [] }>();
 const { settings, resetDefaults } = useTheme();
 const appSettingsState = useAppSettings();
 const { settings: appSettings, resetDefaults: resetAppDefaults } = appSettingsState;
 const { t, locale, setLocale } = useLocale();
+const dataPath = ref('');
+const dataPathError = ref('');
+
+watch(() => props.visible, async (visible) => {
+  if (!visible) return;
+  dataPathError.value = '';
+  try {
+    const status = await invoke<DataStatus>('get_data_status');
+    dataPath.value = status.dataDir || '';
+  } catch (error) {
+    dataPathError.value = String(error);
+  }
+});
 
 function handleResetDefaults() {
   resetDefaults();
   resetAppDefaults();
+}
+
+async function openDataFolder() {
+  dataPathError.value = '';
+  try {
+    await invoke('open_data_directory');
+  } catch (error) {
+    dataPathError.value = String(error);
+  }
 }
 </script>
 
@@ -21,7 +46,7 @@ function handleResetDefaults() {
     <div v-if="visible" class="form-overlay" @click.self="emit('close')">
       <div class="form-panel">
         <div class="form-header">
-          <span>{{ t.appearanceSettings }}</span>
+          <span>{{ t.settingsTitle }}</span>
           <button class="form-close" @click="emit('close')" :aria-label="t.close">
             <svg width="14" height="14" viewBox="0 0 14 14">
               <line x1="3" y1="3" x2="11" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -66,6 +91,16 @@ function handleResetDefaults() {
               />
               <span>{{ t.defaultReminderCheck }}</span>
             </label>
+          </div>
+          <div class="form-group">
+            <label>{{ t.dataLocation }}</label>
+            <button class="data-path-button" type="button" @click="openDataFolder">
+              <span>{{ dataPath }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H9l2 2h7.5A2.5 2.5 0 0 1 21 8.5v8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/>
+              </svg>
+            </button>
+            <span v-if="dataPathError" class="data-path-error" role="alert">{{ dataPathError }}</span>
           </div>
         </div>
         <div class="form-footer">
@@ -209,6 +244,33 @@ function handleResetDefaults() {
   background: transparent;
   cursor: pointer;
   padding: 2px;
+}
+.data-path-button {
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--dl-border-subtle);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--dl-surface);
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+}
+.data-path-button span {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.data-path-button:hover {
+  background: var(--dl-surface-stronger);
+}
+.data-path-error {
+  color: #fca5a5;
+  font-size: 11px;
+  line-height: 1.4;
 }
 .form-footer {
   display: flex;
