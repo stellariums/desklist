@@ -31,7 +31,7 @@ struct ReminderRow {
     #[allow(dead_code)]
     reminder_type: String,
     title: String,
-    event_time: String,
+    display_time: String,
 }
 
 async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
@@ -48,10 +48,10 @@ async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
     };
 
     let reminders = sqlx::query_as::<_, ReminderRow>(
-        "SELECT rq.id, rq.event_id, rq.fire_at, rq.type, e.title, e.event_time \
+        "SELECT rq.id, rq.event_id, rq.fire_at, rq.type, e.title, COALESCE(e.due_time, e.event_time) AS display_time \
          FROM reminder_queue rq \
          JOIN events e ON rq.event_id = e.id \
-         WHERE rq.fired = 0 AND rq.fire_at <= ? AND e.completed = 0",
+         WHERE rq.fired = 0 AND rq.fire_at <= ? AND e.completed = 0 AND e.deleted_at IS NULL AND e.is_inbox = 0",
     )
     .bind(&now)
     .fetch_all(&pool)
@@ -59,14 +59,14 @@ async fn check_reminders(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
 
     for reminder in &reminders {
         let time_display = if let Ok(utc_time) = chrono::NaiveDateTime::parse_from_str(
-            &reminder.event_time.replace("Z", ""),
+            &reminder.display_time.replace("Z", ""),
             "%Y-%m-%dT%H:%M:%S%.f",
         ) {
             let utc_dt = Utc.from_utc_datetime(&utc_time);
             let local_dt = utc_dt.with_timezone(&Local);
             local_dt.format("%Y-%m-%d %H:%M").to_string()
         } else {
-            reminder.event_time.clone()
+            reminder.display_time.clone()
         };
 
         let _ = app

@@ -50,6 +50,27 @@ html, body, #app {
   overflow: hidden;
 }
 
+html.browser-mode {
+  color-scheme: light;
+  background: #e9e2d5;
+}
+
+html.browser-mode,
+html.browser-mode body,
+html.browser-mode #app {
+  min-height: 100%;
+  height: auto;
+  overflow: auto;
+  background: #f5f6f2;
+}
+
+html.browser-mode #app {
+  display: block;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }

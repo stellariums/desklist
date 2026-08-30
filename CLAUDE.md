@@ -14,7 +14,7 @@ cargo test             # Rust behavior tests, run from src-tauri/
 
 ## Current Architecture
 
-Desklist is a Windows todo/reminder app built with Tauri 2, Vue 3, TypeScript, Rust, and SQLite. The current desktop shell is a frameless 360×520 Acrylic window with tray support. The active product direction is documented in `docs/ROADMAP.zh-CN.md`: evolve toward a browser-based personal workbench, then add local Agent interfaces.
+Desklist is a Windows todo/reminder app built with Tauri 2, Vue 3, TypeScript, Rust, and SQLite. It has a frameless 360×520 Acrylic desktop shell plus a local-only browser workbench. The browser workbench foundation is complete; the next product phase, documented in `docs/ROADMAP.zh-CN.md`, is protected local Agent interfaces.
 
 ### Data Flow
 
@@ -22,7 +22,8 @@ Desklist is a Windows todo/reminder app built with Tauri 2, Vue 3, TypeScript, R
 - `src-tauri/src/events.rs` owns event CRUD, validation, recurrence generation, and reminder-queue updates.
 - `src-tauri/src/db.rs` owns the selected data directory, SQLite pool, migrations, first-run migration, and database checks.
 - `src-tauri/src/scheduler.rs` uses the same shared SQLite pool and polls reminders every 30 seconds.
-- Keep future HTTP or MCP handlers thin and reuse this Rust business layer; do not duplicate task rules in the frontend.
+- `src-tauri/src/web_server.rs` serves embedded Vue assets and local task query/create/inbox/update/toggle/trash/restore/delete endpoints on `127.0.0.1:47831`.
+- HTTP handlers stay thin and reuse the Rust event business-logic layer; future MCP handlers must follow the same rule.
 
 ### Data Location and First-Run Migration
 
@@ -37,9 +38,10 @@ Desklist is a Windows todo/reminder app built with Tauri 2, Vue 3, TypeScript, R
 
 - SQLite is managed by a shared `sqlx::SqlitePool` in `DatabaseState`.
 - Migration SQL lives in `src-tauri/migrations/` and runs through `sqlx::migrate!`.
-- Existing tables are `events` and `reminder_queue`; released migrations must never be rewritten.
+- Existing tables are `events` and `reminder_queue`; `events.deleted_at` implements the recycle bin and `events.is_inbox` keeps unscheduled captures out of calendars and reminders. `event_time` is the scheduled start, while `scheduled_end` and `due_time` are optional; existing tasks keep their start time and receive no invented end or deadline. Released migrations must never be rewritten.
 - Rust SQL uses `?` placeholders.
 - Event timestamps are UTC RFC 3339 strings; list and calendar boundaries are calculated in local time by the frontend and passed as UTC strings.
+- On-time and advance reminders are anchored to `due_time` when present, otherwise to `event_time`. Recurring occurrences shift optional schedule-end, deadline, and advance-reminder timestamps by the same offset as the scheduled start.
 
 ### Tauri Commands
 
@@ -54,13 +56,17 @@ Event operations:
 - `fetch_events`
 - `fetch_month_events`
 - `create_event`
+- `create_inbox_event`
 - `update_event`
 - `delete_event`
+- `restore_event`
+- `permanently_delete_event`
 - `toggle_complete`
 
 ### Frontend Structure
 
-- `App.vue` — data readiness gate and current desktop shell
+- `App.vue` — switches between the Tauri desktop shell and browser workbench
+- `components/BrowserWorkbench.vue` — responsive browser workbench with Today, weekly/monthly review calendars, inbox, task operations, and recycle-bin flows
 - `components/DataLocationSetup.vue` — first-run folder selection and migration UI
 - `components/EventList.vue` / `CalendarView.vue` — list and calendar views
 - `components/EventForm.vue` — create/edit panel
@@ -75,6 +81,7 @@ Event operations:
 - `events.rs` — event business logic and temporary-database tests
 - `scheduler.rs` — reminder polling and notifications
 - `tray.rs` — system tray menu and handlers
+- `web_server.rs` — local HTTP listener, task query/write endpoints, and embedded frontend assets
 
 ### Close-to-Tray
 
@@ -91,7 +98,7 @@ cargo test
 cargo check
 ```
 
-For packaging or data-location changes, also run `npm run tauri build` and verify that the app restarts without Vite, reads the selected database, and leaves the legacy database untouched.
+For packaging, data-location, or browser-service changes, also run `npm run tauri build` and verify that the app restarts without Vite, reads the selected database, serves `http://127.0.0.1:47831`, and leaves the legacy database untouched.
 
 Tests that create, edit, complete, or delete events must use a temporary/in-memory database. Never use the user's real `desklist.db` as test data.
 

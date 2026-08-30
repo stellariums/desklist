@@ -2,12 +2,12 @@
 
 ## Project Structure & Module Organization
 - `src/`: Vue 3 + TypeScript frontend.
-- `src/components/`: UI components (for example `EventList.vue`, `CalendarView.vue`).
+- `src/components/`: UI components (for example `EventList.vue`, `CalendarView.vue`, `BrowserWorkbench.vue`).
 - `src/composables/`: state and data logic (`useEvents.ts`, theme/locale/settings hooks).
 - `src/i18n/`: locale dictionaries (`en.ts`, `zh-CN.ts`).
 - `src/styles/`: global styles.
 - `src-tauri/`: Rust desktop host for Tauri.
-- `src-tauri/src/`: backend modules (`lib.rs`, `db.rs`, `events.rs`, `scheduler.rs`, `tray.rs`).
+- `src-tauri/src/`: backend modules (`lib.rs`, `db.rs`, `events.rs`, `scheduler.rs`, `tray.rs`, `web_server.rs`).
 - `src-tauri/migrations/`: SQLite schema migrations.
 - `public/`: static assets; `dist/` is build output (do not edit manually).
 

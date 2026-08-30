@@ -2,6 +2,7 @@ mod db;
 mod events;
 mod scheduler;
 mod tray;
+mod web_server;
 
 use tauri::Manager;
 
@@ -26,12 +27,16 @@ pub fn run() {
             events::fetch_events,
             events::fetch_month_events,
             events::create_event,
+            events::create_inbox_event,
             events::update_event,
             events::delete_event,
+            events::restore_event,
+            events::permanently_delete_event,
             events::toggle_complete,
         ])
         .setup(|app| {
             tauri::async_runtime::block_on(db::initialize(app.handle()));
+            web_server::start(app.handle().clone())?;
             tray::setup_tray(app.handle())?;
 
             scheduler::start_reminder_scheduler(app.handle().clone());

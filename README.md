@@ -10,7 +10,7 @@ Compared with bloated todo apps, Desklist focuses on the desktop experience: a c
 
 ## Features
 
-- Create, edit, and delete events with title, description, and time
+- Create, edit, and safely delete events with title, description, a scheduled time block, and an optional deadline
 - Four filter views: Today / Incomplete / Completed / All
 - **Calendar view**: switch between list and calendar views via the title bar button; dates with pending events show a dot; click a date to see that day's events
 - Scheduled reminders: due-time reminders + optional advance reminders (5/15/30/60 minutes or 1 day before)
@@ -21,6 +21,10 @@ Compared with bloated todo apps, Desklist focuses on the desktop experience: a c
 - Dark frosted-glass UI (Windows Acrylic)
 - Choose the task data folder on first launch instead of being forced to use the system drive
 - View and open the active data folder from Settings
+- Local browser workbench for viewing, creating, editing, completing, and reopening tasks
+- Inbox for capturing tasks before assigning a date and time
+- Today home page combining today's agenda, historical overdue tasks, and inbox status
+- Weekly and monthly review calendars with period navigation, a Today shortcut, and synchronized daily details
 
 ## Data Storage
 
@@ -51,12 +55,26 @@ npm run tauri build
 
 ## Roadmap
 
-The next phase turns Desklist into a browser-based personal workbench, followed by local Agent interfaces. See the [personal workbench roadmap](docs/ROADMAP.zh-CN.md) for completed work, implementation order, and deferred scope.
+The browser-based personal workbench foundation is complete. The next phase adds protected local Agent interfaces. See the [personal workbench roadmap](docs/ROADMAP.zh-CN.md) for completed work, implementation order, and deferred scope.
+
+## Browser workbench
+
+While Desklist is running, choose `Open Browser Workbench` from the tray menu or visit `http://127.0.0.1:47831`. The workbench can capture unscheduled tasks in the inbox, schedule them into the calendar, set a separate optional deadline, manage task completion, and safely delete or restore tasks through the recycle bin.
+
+The web service listens on the local computer only and is not available to other devices on the network.
 
 ## Changelog
 
 ### Unreleased
 
+- Added local-only browser task endpoints for viewing, creating, editing, completing, and reopening tasks
+- Added a recycle bin with soft deletion, restore, and confirmed permanent deletion
+- Added an inbox for quick capture and later scheduling into the calendar
+- Added a Today home page with agenda, overdue-task, and inbox summaries plus quick actions
+- Separated scheduled start/end times from optional task deadlines; reminders target the deadline when one is set
+- Added weekly/monthly calendar switching with cross-month week navigation and synchronized daily review details
+- Refined the browser workbench's editorial visual system, responsive spacing, focus states, empty states, and task modal behavior
+- Added a tray shortcut for opening the browser workbench
 - Added first-launch data-folder selection and safe migration of an existing database
 - Added the active data location to Settings with a shortcut to open the folder
 - Centralized task CRUD, recurrence, and reminder behavior in the Rust backend

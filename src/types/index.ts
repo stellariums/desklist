@@ -3,19 +3,31 @@ export interface DeskEvent {
   title: string;
   description: string;
   event_time: string;
+  scheduled_end: string | null;
+  due_time: string | null;
   completed: number;
   remind_at: string | null;
   remind_on_time: number;
   recurrence: string;
   recurrence_end: string | null;
   generated_next_id?: string | null;
+  deleted_at: string | null;
+  is_inbox: number;
   created_at: string;
   updated_at: string;
 }
 
 export type EventInput = Pick<
   DeskEvent,
-  'title' | 'description' | 'event_time' | 'remind_at' | 'remind_on_time' | 'recurrence' | 'recurrence_end'
+  | 'title'
+  | 'description'
+  | 'event_time'
+  | 'scheduled_end'
+  | 'due_time'
+  | 'remind_at'
+  | 'remind_on_time'
+  | 'recurrence'
+  | 'recurrence_end'
 >;
 
 export interface DataStatus {

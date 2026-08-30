@@ -20,10 +20,13 @@ const emit = defineEmits<{
 const title = ref('');
 const description = ref('');
 const eventTime = ref('');
+const scheduledEnd = ref('');
+const dueTime = ref('');
 const remindOnTime = ref(1);
 const advanceMinutes = ref(0);
 const recurrence = ref('none');
 const recurrenceEnd = ref('');
+const timeError = ref('');
 const appSettingsState = useAppSettings();
 const { settings: appSettings } = appSettingsState;
 const { t } = useLocale();
@@ -33,8 +36,13 @@ watch(() => props.visible, (val) => {
     title.value = props.editEvent.title;
     description.value = props.editEvent.description;
     eventTime.value = toLocalDatetime(props.editEvent.event_time);
+    scheduledEnd.value = props.editEvent.scheduled_end ? toLocalDatetime(props.editEvent.scheduled_end) : '';
+    dueTime.value = props.editEvent.due_time ? toLocalDatetime(props.editEvent.due_time) : '';
     remindOnTime.value = props.editEvent.remind_on_time;
-    advanceMinutes.value = calcAdvanceMinutes(props.editEvent.event_time, props.editEvent.remind_at);
+    advanceMinutes.value = calcAdvanceMinutes(
+      props.editEvent.due_time || props.editEvent.event_time,
+      props.editEvent.remind_at,
+    );
     recurrence.value = props.editEvent.recurrence;
     recurrenceEnd.value = props.editEvent.recurrence_end ? toLocalDatetime(props.editEvent.recurrence_end) : '';
   } else if (val) {
@@ -46,10 +54,13 @@ function resetForm() {
   title.value = '';
   description.value = '';
   eventTime.value = toLocalDatetime(getDefaultEventTimeIso());
+  scheduledEnd.value = '';
+  dueTime.value = '';
   remindOnTime.value = appSettings.defaultRemindOnTime;
   advanceMinutes.value = 0;
   recurrence.value = 'none';
   recurrenceEnd.value = '';
+  timeError.value = '';
 }
 
 function getDefaultEventTimeIso(): string {
@@ -90,7 +101,18 @@ function handleSave() {
   if (!title.value.trim() || !eventTime.value) return;
 
   const eventTimeISO = new Date(eventTime.value).toISOString();
-  const remindAt = calcRemindAt(eventTime.value, advanceMinutes.value);
+  const scheduledEndISO = scheduledEnd.value ? new Date(scheduledEnd.value).toISOString() : null;
+  const dueTimeISO = dueTime.value ? new Date(dueTime.value).toISOString() : null;
+  if (scheduledEndISO && new Date(scheduledEndISO) <= new Date(eventTimeISO)) {
+    timeError.value = '安排结束时间必须晚于开始时间';
+    return;
+  }
+  if (dueTimeISO && new Date(dueTimeISO) < new Date(eventTimeISO)) {
+    timeError.value = '截止时间不能早于安排开始时间';
+    return;
+  }
+  timeError.value = '';
+  const remindAt = calcRemindAt(dueTime.value || eventTime.value, advanceMinutes.value);
   const recEnd = recurrence.value !== 'none' && recurrenceEnd.value
     ? new Date(recurrenceEnd.value).toISOString()
     : null;
@@ -100,6 +122,8 @@ function handleSave() {
       title: title.value.trim(),
       description: description.value.trim(),
       event_time: eventTimeISO,
+      scheduled_end: scheduledEndISO,
+      due_time: dueTimeISO,
       remind_on_time: remindOnTime.value,
       remind_at: remindAt,
       recurrence: recurrence.value,
@@ -110,6 +134,8 @@ function handleSave() {
       title: title.value.trim(),
       description: description.value.trim(),
       event_time: eventTimeISO,
+      scheduled_end: scheduledEndISO,
+      due_time: dueTimeISO,
       remind_on_time: remindOnTime.value,
       remind_at: remindAt,
       recurrence: recurrence.value,
@@ -145,9 +171,21 @@ function handleSave() {
           </div>
 
           <div class="form-group">
-            <label>{{ t.fieldTime }}</label>
+            <label>{{ t.fieldScheduledStart }}</label>
             <input v-model="eventTime" type="datetime-local" class="form-input" />
           </div>
+
+          <div class="form-group">
+            <label>{{ t.fieldScheduledEnd }}</label>
+            <input v-model="scheduledEnd" type="datetime-local" class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label>{{ t.fieldDueTime }}</label>
+            <input v-model="dueTime" type="datetime-local" class="form-input" />
+          </div>
+
+          <p v-if="timeError" class="time-error">{{ timeError }}</p>
 
           <div class="form-group">
             <label>{{ t.fieldReminder }}</label>
@@ -254,6 +292,12 @@ function handleSave() {
   color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+.time-error {
+  margin: -4px 0 12px;
+  color: #ff9d91;
+  font-size: 11px;
+  line-height: 1.5;
 }
 .form-input, .form-textarea {
   padding: 10px 12px;

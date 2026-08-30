@@ -7,16 +7,20 @@ use tauri::{
 
 pub fn setup_tray(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     let show = MenuItem::with_id(app, "show", "Show Desklist", true, None::<&str>)?;
+    let open_browser = MenuItem::with_id(
+        app,
+        "open_browser",
+        "Open Browser Workbench",
+        true,
+        None::<&str>,
+    )?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&show, &quit])?;
+    let menu = Menu::with_items(app, &[&show, &open_browser, &quit])?;
 
-    let icon = app
-        .default_window_icon()
-        .cloned()
-        .unwrap_or_else(|| {
-            Image::from_bytes(include_bytes!("../icons/32x32.png"))
-                .expect("Failed to load embedded tray icon")
-        });
+    let icon = app.default_window_icon().cloned().unwrap_or_else(|| {
+        Image::from_bytes(include_bytes!("../icons/32x32.png"))
+            .expect("Failed to load embedded tray icon")
+    });
 
     TrayIconBuilder::new()
         .icon(icon)
@@ -28,6 +32,9 @@ pub fn setup_tray(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
                     let _ = window.show();
                     let _ = window.set_focus();
                 }
+            }
+            "open_browser" => {
+                let _ = tauri_plugin_opener::open_url(crate::web_server::WEB_URL, None::<&str>);
             }
             "quit" => {
                 app.exit(0);
