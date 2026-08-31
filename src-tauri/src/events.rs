@@ -126,6 +126,17 @@ pub async fn fetch_events_in_pool(
     rows.map_err(|error| format!("读取任务失败：{error}"))
 }
 
+pub(crate) async fn fetch_event_in_pool(
+    pool: &SqlitePool,
+    id: &str,
+) -> Result<Option<DeskEvent>, String> {
+    sqlx::query_as::<_, DeskEvent>("SELECT * FROM events WHERE id = ? LIMIT 1")
+        .bind(id)
+        .fetch_optional(pool)
+        .await
+        .map_err(|error| format!("读取任务失败：{error}"))
+}
+
 #[tauri::command]
 pub async fn fetch_month_events(
     state: State<'_, DatabaseState>,
@@ -388,6 +399,23 @@ pub async fn toggle_complete(state: State<'_, DatabaseState>, id: String) -> Res
 }
 
 pub(crate) async fn toggle_complete_in_pool(pool: &SqlitePool, id: &str) -> Result<(), String> {
+    change_completion_in_pool(pool, id, None, true).await
+}
+
+pub(crate) async fn set_completion_in_pool(
+    pool: &SqlitePool,
+    id: &str,
+    completed: bool,
+) -> Result<(), String> {
+    change_completion_in_pool(pool, id, Some(completed), false).await
+}
+
+async fn change_completion_in_pool(
+    pool: &SqlitePool,
+    id: &str,
+    requested_completed: Option<bool>,
+    missing_is_ok: bool,
+) -> Result<(), String> {
     let mut transaction = pool.begin().await.map_err(db_error)?;
     let event = sqlx::query_as::<_, DeskEvent>(
         "SELECT * FROM events WHERE id = ? AND deleted_at IS NULL AND is_inbox = 0",
@@ -397,11 +425,21 @@ pub(crate) async fn toggle_complete_in_pool(pool: &SqlitePool, id: &str) -> Resu
     .await
     .map_err(db_error)?;
     let Some(event) = event else {
-        return Ok(());
+        return if missing_is_ok {
+            Ok(())
+        } else {
+            Err("找不到要更新完成状态的任务".to_string())
+        };
     };
 
     let now = now_iso();
-    let new_completed = if event.completed == 0 { 1 } else { 0 };
+    let new_completed =
+        requested_completed
+            .map(i64::from)
+            .unwrap_or_else(|| if event.completed == 0 { 1 } else { 0 });
+    if event.completed == new_completed {
+        return Ok(());
+    }
     sqlx::query("UPDATE events SET completed = ?, updated_at = ? WHERE id = ?")
         .bind(new_completed)
         .bind(&now)
@@ -543,6 +581,12 @@ async fn generate_reminders(
 
 fn validate_input(event: &EventInput) -> Result<(), String> {
     validate_text(&event.title, &event.description)?;
+    if ![0, 1].contains(&event.remind_on_time) {
+        return Err("到期提醒开关只能是 0 或 1".to_string());
+    }
+    if !VALID_RECURRENCES.contains(&event.recurrence.as_str()) {
+        return Err("不支持的重复规则".to_string());
+    }
     let event_time = DateTime::parse_from_rfc3339(&event.event_time)
         .map_err(|_| "任务时间格式不正确".to_string())?;
     if let Some(value) = &event.scheduled_end {
@@ -647,8 +691,8 @@ mod tests {
     use super::{
         calculate_next_occurrence, create_event_in_pool, create_inbox_event_in_pool,
         delete_event_in_pool, fetch_events_in_pool, permanently_delete_event_in_pool,
-        restore_event_in_pool, shift_relative_time, toggle_complete_in_pool, update_event_in_pool,
-        EventInput, InboxInput,
+        restore_event_in_pool, set_completion_in_pool, shift_relative_time,
+        toggle_complete_in_pool, update_event_in_pool, EventInput, InboxInput,
     };
     use crate::db::create_test_pool;
 
@@ -671,6 +715,59 @@ mod tests {
             .as_deref(),
             Some("2026-02-28T03:00:00.000Z")
         );
+    }
+
+    #[test]
+    fn explicit_completion_is_idempotent_for_agents() {
+        tauri::async_runtime::block_on(async {
+            let pool = create_test_pool().await;
+            let event_id = create_event_in_pool(
+                &pool,
+                EventInput {
+                    title: "Agent 重试测试".to_string(),
+                    description: String::new(),
+                    event_time: "2099-03-01T10:00:00.000Z".to_string(),
+                    scheduled_end: None,
+                    due_time: None,
+                    remind_at: None,
+                    remind_on_time: 1,
+                    recurrence: "daily".to_string(),
+                    recurrence_end: None,
+                },
+            )
+            .await
+            .expect("event should be created");
+
+            set_completion_in_pool(&pool, &event_id, true)
+                .await
+                .expect("event should be completed");
+            set_completion_in_pool(&pool, &event_id, true)
+                .await
+                .expect("repeated completion should be harmless");
+            let generated_count: i64 = sqlx::query_scalar(
+                "SELECT COUNT(*) FROM events WHERE id != ? AND title = 'Agent 重试测试'",
+            )
+            .bind(&event_id)
+            .fetch_one(&pool)
+            .await
+            .expect("generated event count should be readable");
+            assert_eq!(generated_count, 1);
+
+            set_completion_in_pool(&pool, &event_id, false)
+                .await
+                .expect("event should be reopened");
+            set_completion_in_pool(&pool, &event_id, false)
+                .await
+                .expect("repeated reopen should be harmless");
+            let reminder_count: i64 =
+                sqlx::query_scalar("SELECT COUNT(*) FROM reminder_queue WHERE event_id = ?")
+                    .bind(&event_id)
+                    .fetch_one(&pool)
+                    .await
+                    .expect("reminder count should be readable");
+            assert_eq!(reminder_count, 1);
+            pool.close().await;
+        });
     }
 
     #[test]

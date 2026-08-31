@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useTheme } from '../composables/useTheme';
 import { useAppSettings } from '../composables/useAppSettings';
 import { useLocale } from '../composables/useLocale';
-import type { DataStatus } from '../types';
+import type { AgentAccessStatus, DataStatus } from '../types';
 
 const props = defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ close: [] }>();
@@ -14,15 +14,26 @@ const { settings: appSettings, resetDefaults: resetAppDefaults } = appSettingsSt
 const { t, locale, setLocale } = useLocale();
 const dataPath = ref('');
 const dataPathError = ref('');
+const agentAccess = ref<AgentAccessStatus | null>(null);
+const agentAccessError = ref('');
+const tokenVisible = ref(false);
+const tokenCopied = ref(false);
 
 watch(() => props.visible, async (visible) => {
   if (!visible) return;
   dataPathError.value = '';
+  agentAccessError.value = '';
+  tokenCopied.value = false;
   try {
     const status = await invoke<DataStatus>('get_data_status');
     dataPath.value = status.dataDir || '';
   } catch (error) {
     dataPathError.value = String(error);
+  }
+  try {
+    agentAccess.value = await invoke<AgentAccessStatus>('get_agent_access');
+  } catch (error) {
+    agentAccessError.value = String(error);
   }
 });
 
@@ -37,6 +48,51 @@ async function openDataFolder() {
     await invoke('open_data_directory');
   } catch (error) {
     dataPathError.value = String(error);
+  }
+}
+
+async function copyAgentToken() {
+  if (!agentAccess.value) return;
+  agentAccessError.value = '';
+  try {
+    let copied = false;
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(agentAccess.value.token);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+    }
+    if (!copied) {
+      const temporary = document.createElement('textarea');
+      temporary.value = agentAccess.value.token;
+      temporary.style.position = 'fixed';
+      temporary.style.opacity = '0';
+      document.body.appendChild(temporary);
+      temporary.select();
+      copied = document.execCommand('copy');
+      temporary.remove();
+      if (!copied) throw new Error('Clipboard is unavailable');
+    }
+    tokenCopied.value = true;
+    window.setTimeout(() => {
+      tokenCopied.value = false;
+    }, 1500);
+  } catch (error) {
+    agentAccessError.value = String(error);
+  }
+}
+
+async function regenerateAgentToken() {
+  if (!window.confirm(t.value.regenerateTokenConfirm)) return;
+  agentAccessError.value = '';
+  try {
+    agentAccess.value = await invoke<AgentAccessStatus>('regenerate_agent_token');
+    tokenVisible.value = true;
+    tokenCopied.value = false;
+  } catch (error) {
+    agentAccessError.value = String(error);
   }
 }
 </script>
@@ -101,6 +157,44 @@ async function openDataFolder() {
               </svg>
             </button>
             <span v-if="dataPathError" class="data-path-error" role="alert">{{ dataPathError }}</span>
+          </div>
+          <div class="form-group">
+            <label>{{ t.agentAccess }}</label>
+            <span class="agent-help">{{ t.agentAccessDescription }}</span>
+            <span class="agent-field-label">{{ t.agentEndpoint }}</span>
+            <input
+              class="agent-value"
+              :value="agentAccess?.endpoint || ''"
+              readonly
+              aria-readonly="true"
+            />
+            <span class="agent-field-label">{{ t.agentMcpEndpoint }}</span>
+            <input
+              class="agent-value"
+              :value="agentAccess?.mcpEndpoint || ''"
+              readonly
+              aria-readonly="true"
+            />
+            <span class="agent-field-label">{{ t.agentToken }}</span>
+            <input
+              class="agent-value agent-token"
+              :type="tokenVisible ? 'text' : 'password'"
+              :value="agentAccess?.token || ''"
+              readonly
+              aria-readonly="true"
+            />
+            <div class="agent-actions">
+              <button class="agent-button" type="button" @click="tokenVisible = !tokenVisible">
+                {{ tokenVisible ? t.hideToken : t.showToken }}
+              </button>
+              <button class="agent-button" type="button" :disabled="!agentAccess" @click="copyAgentToken">
+                {{ tokenCopied ? t.copiedToken : t.copyToken }}
+              </button>
+              <button class="agent-button agent-button-danger" type="button" @click="regenerateAgentToken">
+                {{ t.regenerateToken }}
+              </button>
+            </div>
+            <span v-if="agentAccessError" class="data-path-error" role="alert">{{ agentAccessError }}</span>
           </div>
         </div>
         <div class="form-footer">
@@ -167,6 +261,7 @@ async function openDataFolder() {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow-y: auto;
 }
 .form-group {
   display: flex;
@@ -271,6 +366,61 @@ async function openDataFolder() {
   color: #fca5a5;
   font-size: 11px;
   line-height: 1.4;
+}
+.agent-help {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.agent-field-label {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 11px;
+}
+.agent-value {
+  width: 100%;
+  min-height: 34px;
+  box-sizing: border-box;
+  padding: 7px 9px;
+  border: 1px solid var(--dl-border-subtle);
+  border-radius: 8px;
+  outline: none;
+  background: var(--dl-surface);
+  color: rgba(255, 255, 255, 0.78);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 10px;
+}
+.agent-value:focus {
+  border-color: var(--dl-accent);
+}
+.agent-token {
+  letter-spacing: 0.2px;
+}
+.agent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.agent-button {
+  padding: 6px 8px;
+  border: 1px solid var(--dl-border-subtle);
+  border-radius: 7px;
+  background: var(--dl-surface);
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  font-size: 11px;
+}
+.agent-button:hover:not(:disabled) {
+  background: var(--dl-surface-stronger);
+  color: rgba(255, 255, 255, 0.92);
+}
+.agent-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.agent-button-danger {
+  border-color: rgba(248, 113, 113, 0.35);
+  color: #fca5a5;
 }
 .form-footer {
   display: flex;

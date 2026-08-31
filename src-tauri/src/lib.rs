@@ -1,3 +1,6 @@
+mod agent_access;
+mod agent_api;
+mod agent_mcp;
 mod db;
 mod events;
 mod scheduler;
@@ -9,6 +12,7 @@ use tauri::Manager;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(agent_access::AgentAccessState::default())
         .manage(db::DatabaseState::default())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
@@ -24,6 +28,8 @@ pub fn run() {
             db::get_data_status,
             db::configure_data_directory,
             db::open_data_directory,
+            agent_access::get_agent_access,
+            agent_access::regenerate_agent_token,
             events::fetch_events,
             events::fetch_month_events,
             events::create_event,
@@ -36,6 +42,7 @@ pub fn run() {
         ])
         .setup(|app| {
             tauri::async_runtime::block_on(db::initialize(app.handle()));
+            agent_access::initialize(app.handle())?;
             web_server::start(app.handle().clone())?;
             tray::setup_tray(app.handle())?;
 

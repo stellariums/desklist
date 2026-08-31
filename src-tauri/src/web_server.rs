@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use std::net::TcpListener as StdTcpListener;
 use tauri::{AppHandle, Manager};
 
-use crate::{db::DatabaseState, events};
+use crate::{agent_api, agent_mcp, db::DatabaseState, events};
 
 pub const WEB_ADDRESS: &str = "127.0.0.1:47831";
 pub const WEB_URL: &str = "http://127.0.0.1:47831";
@@ -55,6 +55,8 @@ pub fn start(app: AppHandle) -> Result<(), Box<dyn std::error::Error>> {
             }
         };
         let router = Router::new()
+            .merge(agent_mcp::router(app.clone()))
+            .nest("/api/agent/v1", agent_api::router())
             .route("/api/health", get(health))
             .route("/api/events", get(list_events).post(create_event))
             .route("/api/inbox", post(create_inbox_event))

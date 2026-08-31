@@ -37,6 +37,12 @@ export interface DataStatus {
   error: string | null;
 }
 
+export interface AgentAccessStatus {
+  endpoint: string;
+  mcpEndpoint: string;
+  token: string;
+}
+
 export interface ReminderRecord {
   id: number;
   event_id: string;

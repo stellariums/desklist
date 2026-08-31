@@ -1,6 +1,6 @@
 [package]
 name = "desklist"
-version = "1.5.1"
+version = "1.6.0"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
@@ -19,6 +19,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 axum = "0.8"
+rmcp = { version = "3.0.0", features = ["server", "transport-streamable-http-server"] }
 tauri = { version = "2", features = ["tray-icon", "image-png"] }
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"

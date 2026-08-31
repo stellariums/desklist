@@ -1,0 +1,183 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Desklist Local Agent API",
+    "version": "1.0.0",
+    "description": "A local-only API for trusted agents. Every request except this document requires a Desklist bearer token."
+  },
+  "servers": [
+    { "url": "http://127.0.0.1:47831/api/agent/v1" }
+  ],
+  "security": [
+    { "bearerAuth": [] }
+  ],
+  "paths": {
+    "/events": {
+      "get": {
+        "summary": "List tasks",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["today", "upcoming", "completed", "all", "inbox", "trash"],
+              "default": "upcoming"
+            }
+          },
+          { "name": "today_start", "in": "query", "schema": { "type": "string", "format": "date-time" } },
+          { "name": "today_end", "in": "query", "schema": { "type": "string", "format": "date-time" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tasks",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/DeskEvent" } } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "summary": "Create a scheduled task",
+        "parameters": [{ "$ref": "#/components/parameters/AgentSource" }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EventInput" } } }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/Created" },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/inbox": {
+      "post": {
+        "summary": "Create an unscheduled inbox task",
+        "parameters": [{ "$ref": "#/components/parameters/AgentSource" }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InboxInput" } } }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/Created" },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/events/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/EventId" }],
+      "get": {
+        "summary": "Get one task",
+        "responses": {
+          "200": { "description": "Task", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeskEvent" } } } },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "summary": "Replace a task",
+        "parameters": [{ "$ref": "#/components/parameters/AgentSource" }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EventInput" } } }
+        },
+        "responses": {
+          "200": { "$ref": "#/components/responses/Ok" },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/events/{id}/complete": {
+      "post": {
+        "summary": "Mark a task complete (idempotent)",
+        "parameters": [{ "$ref": "#/components/parameters/EventId" }, { "$ref": "#/components/parameters/AgentSource" }],
+        "responses": { "200": { "$ref": "#/components/responses/Ok" }, "401": { "$ref": "#/components/responses/Unauthorized" } }
+      }
+    },
+    "/events/{id}/reopen": {
+      "post": {
+        "summary": "Mark a task incomplete (idempotent)",
+        "parameters": [{ "$ref": "#/components/parameters/EventId" }, { "$ref": "#/components/parameters/AgentSource" }],
+        "responses": { "200": { "$ref": "#/components/responses/Ok" }, "401": { "$ref": "#/components/responses/Unauthorized" } }
+      }
+    },
+    "/events/{id}/trash": {
+      "post": {
+        "summary": "Move a task to the recycle bin",
+        "parameters": [{ "$ref": "#/components/parameters/EventId" }, { "$ref": "#/components/parameters/AgentSource" }],
+        "responses": { "200": { "$ref": "#/components/responses/Ok" }, "401": { "$ref": "#/components/responses/Unauthorized" } }
+      }
+    },
+    "/events/{id}/restore": {
+      "post": {
+        "summary": "Restore a task from the recycle bin",
+        "parameters": [{ "$ref": "#/components/parameters/EventId" }, { "$ref": "#/components/parameters/AgentSource" }],
+        "responses": { "200": { "$ref": "#/components/responses/Ok" }, "401": { "$ref": "#/components/responses/Unauthorized" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "Desklist token" }
+    },
+    "parameters": {
+      "EventId": { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+      "AgentSource": { "name": "X-Desklist-Agent", "in": "header", "required": false, "schema": { "type": "string", "maxLength": 100 }, "description": "Name recorded in the audit log." }
+    },
+    "responses": {
+      "Ok": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/OkResponse" } } } },
+      "Created": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreatedResponse" } } } },
+      "BadRequest": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+      "Unauthorized": { "description": "Missing or invalid bearer token", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+      "NotFound": { "description": "Task not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+    },
+    "schemas": {
+      "EventInput": {
+        "type": "object",
+        "required": ["title", "event_time"],
+        "properties": {
+          "title": { "type": "string", "maxLength": 200 },
+          "description": { "type": "string", "maxLength": 1000, "default": "" },
+          "event_time": { "type": "string", "format": "date-time" },
+          "scheduled_end": { "type": ["string", "null"], "format": "date-time" },
+          "due_time": { "type": ["string", "null"], "format": "date-time" },
+          "remind_at": { "type": ["string", "null"], "format": "date-time" },
+          "remind_on_time": { "type": "integer", "enum": [0, 1], "default": 1 },
+          "recurrence": { "type": "string", "enum": ["none", "daily", "weekly", "monthly"], "default": "none" },
+          "recurrence_end": { "type": ["string", "null"], "format": "date-time" }
+        }
+      },
+      "InboxInput": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string", "maxLength": 200 },
+          "description": { "type": "string", "maxLength": 1000, "default": "" }
+        }
+      },
+      "DeskEvent": {
+        "allOf": [
+          { "$ref": "#/components/schemas/EventInput" },
+          {
+            "type": "object",
+            "required": ["id", "completed", "deleted_at", "is_inbox", "created_at", "updated_at"],
+            "properties": {
+              "id": { "type": "string", "format": "uuid" },
+              "completed": { "type": "integer", "enum": [0, 1] },
+              "generated_next_id": { "type": ["string", "null"] },
+              "deleted_at": { "type": ["string", "null"], "format": "date-time" },
+              "is_inbox": { "type": "integer", "enum": [0, 1] },
+              "created_at": { "type": "string", "format": "date-time" },
+              "updated_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        ]
+      },
+      "CreatedResponse": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string" } } },
+      "OkResponse": { "type": "object", "required": ["status"], "properties": { "status": { "type": "string", "const": "ok" } } },
+      "ErrorResponse": { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" } } }
+    }
+  }
+}

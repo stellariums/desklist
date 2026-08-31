@@ -55,7 +55,7 @@ npm run tauri build
 
 ## Roadmap
 
-The browser-based personal workbench foundation is complete. The next phase adds protected local Agent interfaces. See the [personal workbench roadmap](docs/ROADMAP.zh-CN.md) for completed work, implementation order, and deferred scope.
+The browser-based personal workbench, protected local Agent REST API, and Streamable HTTP MCP are complete. The next phase is real Agent integration testing. See the [personal workbench roadmap](docs/ROADMAP.zh-CN.md) for completed work, implementation order, and deferred scope.
 
 ## Browser workbench
 
@@ -65,8 +65,13 @@ The web service listens on the local computer only and is not available to other
 
 ## Changelog
 
-### Unreleased
+### v1.6.0
 
+- Added a token-protected local Agent REST API and OpenAPI contract
+- Added a Streamable HTTP MCP server with list and single-task queries, capture, create, update, completion, reopening, and recycle-bin tools
+- Added Agent endpoint and token management to desktop settings
+- Made Agent complete/reopen operations idempotent and limited deletion to the recoverable recycle bin
+- Added an audit log for Agent writes, including task, action, source, and time
 - Added local-only browser task endpoints for viewing, creating, editing, completing, and reopening tasks
 - Added a recycle bin with soft deletion, restore, and confirmed permanent deletion
 - Added an inbox for quick capture and later scheduling into the calendar
