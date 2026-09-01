@@ -2,6 +2,10 @@
 
 [English](README.md) | 中文
 
+<p align="center">
+  <img src="docs/assets/desklist-logo.png" alt="Desklist 软件 Logo" width="180" />
+</p>
+
 Windows 桌面待办/提醒小工具。无边框桌面底层窗口，最小化到系统托盘，支持定时提醒和周期事件。
 
 Desklist 面向想要“抬手就记、随时可见”的 Windows 用户。你可以快速打开它、立刻记录待办、把它安静地放在系统托盘里，并通过定时提醒和周期事件维持稳定的日常节奏，而不必切到复杂笨重的项目管理软件。
@@ -65,6 +69,12 @@ Desklist 运行后，可通过托盘菜单 `Open Browser Workbench` 打开浏览
 网页服务只监听本机地址，局域网和公网中的其他设备无法访问。
 
 ## 更新日志
+
+### v2.0.0
+
+- 启用以收件箱和任务卡片为核心的全新 Desklist 视觉识别
+- 替换 Windows 应用、任务栏、托盘、安装包、ICO、ICNS 和各平台尺寸图标
+- 增加清理透明杂点后的品牌图，同时完整保留原始 Logo 源图
 
 ### v1.6.0
 

@@ -2,6 +2,10 @@
 
 [中文](README.zh-CN.md) | English
 
+<p align="center">
+  <img src="docs/assets/desklist-logo.png" alt="Desklist logo" width="180" />
+</p>
+
 A lightweight Windows desktop todo/reminder app. It features a borderless desktop-bottom window, minimizes to the system tray, and supports scheduled reminders and recurring events.
 
 Desklist is built for people who want a reminder tool that feels fast, visible, and native on Windows. You can open it in seconds, capture tasks quickly, keep it quietly in the tray, and rely on timed or recurring reminders without switching to a heavy project-management app.
@@ -64,6 +68,12 @@ While Desklist is running, choose `Open Browser Workbench` from the tray menu or
 The web service listens on the local computer only and is not available to other devices on the network.
 
 ## Changelog
+
+### v2.0.0
+
+- Introduced a new Desklist visual identity built around the inbox and stacked task cards
+- Replaced the Windows app, taskbar, tray, installer, ICO, ICNS, and platform icon assets
+- Added a cleaned transparent brand asset while preserving the original logo source
 
 ### v1.6.0
 
